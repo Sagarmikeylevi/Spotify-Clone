@@ -8,7 +8,7 @@ import { useDataLayerValue } from "./DataLayer";
 const spotify = new SpotifyWebApi();
 
 function App() {
-  const [{ user, token }, dispatch] = useDataLayerValue();
+  const [{ user, token, playlists }, dispatch] = useDataLayerValue();
 
   useEffect(() => {
     const hash = getTokenFromUrl();
@@ -31,21 +31,33 @@ function App() {
         });
       });
 
-      spotify.getUserPlaylists().then((playlist) => {
-        console.log(playlist);
-      });
+      spotify.getUserPlaylists().then((playlists) => {
+        console.log(playlists.items);
 
-      // spotify.getMySavedTracks().then((savedTracks) => {
-      //   console.log(savedTracks);
-      // });
+        playlists.items.map((item) => {
+          dispatch({
+            type: "ADD_PLAYLIST",
+            playlist: {
+              title: item.name,
+              imgURL: item.images[0].url,
+              other: item.owner.display_name,
+            },
+          });
+        });
+        // pla
+      });
 
       // spotify.getPlaylist().then((playlist) => {
       //   console.log(playlist);
       // });
     }
+
+    // spotify.getMySavedTracks().then((savedTracks) => {
+    //   console.log(savedTracks);
+    // });
   }, []);
 
-  console.log(token);
+  // console.log(playlists);
 
   return (
     <>
@@ -56,3 +68,5 @@ function App() {
 }
 
 export default App;
+
+

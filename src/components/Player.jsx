@@ -4,7 +4,7 @@ import Footer from "./Footer";
 
 const Player = () => {
   return (
-    <div className="h-screen flex flex-row">
+    <div className="h-screen flex flex-row bg-[#0d0d0d]">
       <Sidebar />
       <Body />
       <Footer />
