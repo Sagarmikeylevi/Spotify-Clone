@@ -30,11 +30,22 @@ function App() {
           user,
         });
       });
+
+      spotify.getUserPlaylists().then((playlist) => {
+        console.log(playlist);
+      });
+
+      // spotify.getMySavedTracks().then((savedTracks) => {
+      //   console.log(savedTracks);
+      // });
+
+      // spotify.getPlaylist().then((playlist) => {
+      //   console.log(playlist);
+      // });
     }
   }, []);
 
-  console.log("User ---> ", user);
-  console.log("Token ---> ", token);
+  console.log(token);
 
   return (
     <>
