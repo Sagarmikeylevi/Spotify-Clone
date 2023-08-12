@@ -7,7 +7,7 @@ export const initialState = {
 };
 
 const reducer = (state, action) => {
-  // console.log(action);
+  // console.log("action ---> ", action);
 
   // Action --> type, [playload]
 
@@ -27,7 +27,10 @@ const reducer = (state, action) => {
     case "ADD_PLAYLIST":
       return {
         ...state,
-        playlists: [...state.playlists, action.playlist],
+        playlists:
+          action.playlist.id === 1
+            ? [action.playlist, ...state.playlists]
+            : [...state.playlists, action.playlist],
       };
 
     default:

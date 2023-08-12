@@ -1,6 +1,6 @@
 const Playlist = ({ imgURL, title, other }) => {
   return (
-    <div className="flex flex-row p-2 rounded-md hover:bg-[rgba(217,217,217,0.1)] cursor-pointer">
+    <div className="flex flex-row p-2 rounded-md hover:bg-[rgba(217,217,217,0.1)] cursor-pointer transition-all duration-200">
       <img
         className="h-16 w-16 rounded-md shadow-2xl mr-4"
         src={imgURL}

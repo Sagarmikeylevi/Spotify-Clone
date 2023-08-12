@@ -7,7 +7,7 @@ import Playlist from "./Playlist";
 import { useDataLayerValue } from "../DataLayer";
 
 const Sidebar = () => {
-  const [{ playlists }, dispatch] = useDataLayerValue();
+  const [{ playlists }] = useDataLayerValue();
   return (
     <div className="h-full min-w-[384px] p-[10px]">
       <div className="bg-[#262626] rounded-md shadow-md mb-2 p-[10px]">
@@ -29,10 +29,10 @@ const Sidebar = () => {
           <AddIcon className="mr-2 cursor-pointer" />
         </div>
 
-        <div className="max-h-52 overflow-hidden hover:overflow-y-auto scrollbar-thin scrollbar-thumb-[rgba(217,217,217,0.6)] scrollbar-track-transparent ">
+        <div className="max-h-52 overflow-hidden hover:overflow-y-auto scrollbar-thin scrollbar-thumb-[rgba(217,217,217,0.6)] scrollbar-track-transparent transition-all duration-300">
           {playlists.map((playlist) => (
             <Playlist
-              key={100}
+              key={playlist.id}
               imgURL={playlist.imgURL}
               title={playlist.title}
               other={playlist.other}

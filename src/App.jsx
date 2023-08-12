@@ -8,7 +8,7 @@ import { useDataLayerValue } from "./DataLayer";
 const spotify = new SpotifyWebApi();
 
 function App() {
-  const [{ user, token, playlists }, dispatch] = useDataLayerValue();
+  const [{ token }, dispatch] = useDataLayerValue();
 
   useEffect(() => {
     const hash = getTokenFromUrl();
@@ -31,30 +31,42 @@ function App() {
         });
       });
 
+      // Liked Songs
+      spotify.getMySavedTracks().then((savedTracks) => {
+        // console.log(savedTracks);
+        dispatch({
+          type: "ADD_PLAYLIST",
+          playlist: {
+            id: 1,
+            title: "Liked Songs",
+            imgURL:
+              "https://spotify-static-clone.netlify.app/images/likedsongs.jpg",
+            other: savedTracks.total + " songs",
+          },
+        });
+      });
+
+      // Playlists
       spotify.getUserPlaylists().then((playlists) => {
-        console.log(playlists.items);
+        // console.log(playlists.items);
 
         playlists.items.map((item) => {
           dispatch({
             type: "ADD_PLAYLIST",
             playlist: {
+              id: item.id,
               title: item.name,
               imgURL: item.images[0].url,
               other: item.owner.display_name,
             },
           });
         });
-        // pla
       });
 
       // spotify.getPlaylist().then((playlist) => {
       //   console.log(playlist);
       // });
     }
-
-    // spotify.getMySavedTracks().then((savedTracks) => {
-    //   console.log(savedTracks);
-    // });
   }, []);
 
   // console.log(playlists);
@@ -68,5 +80,3 @@ function App() {
 }
 
 export default App;
-
-
