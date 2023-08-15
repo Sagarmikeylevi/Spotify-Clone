@@ -4,6 +4,7 @@ export const initialState = {
   playing: false,
   item: null,
   token: null,
+  showSidebar: true,
 };
 
 const reducer = (state, action) => {
@@ -41,6 +42,12 @@ const reducer = (state, action) => {
       return {
         ...state,
         playlists: updatedPlaylists,
+      };
+
+    case "SHOW_SIDEBAR":
+      return {
+        ...state,
+        showSidebar: !state.showSidebar,
       };
 
     default:

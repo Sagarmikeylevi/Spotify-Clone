@@ -7,6 +7,7 @@ import SidebarOption from "./SidebarOption";
 import Playlist from "./Playlist";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 import AddBoxIcon from "@mui/icons-material/AddBox";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useDataLayerValue } from "../DataLayer";
 import { useState } from "react";
 import Message from "./UI/Message";
@@ -16,8 +17,17 @@ const spotify = new SpotifyWebApi();
 const Sidebar = () => {
   const [addPlaylist, setAddPlaylist] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState("");
-  const [showMessage, setShowMessage] = useState(false);
-  const [{ playlists, user }, dispatch] = useDataLayerValue();
+  const [showMessage, setShowMessage] = useState({
+    isShow: false,
+    message: "",
+  });
+  const [{ playlists, user, showSidebar }, dispatch] = useDataLayerValue();
+
+  const showSidebarHandler = () => {
+    dispatch({
+      type: "SHOW_SIDEBAR",
+    });
+  };
 
   const createPlaylist = async (userId, playlistName, isPublic) => {
     try {
@@ -40,7 +50,10 @@ const Sidebar = () => {
       return;
     }
 
-    setShowMessage(true);
+    setShowMessage({
+      isShow: true,
+      message: "Playlist Created",
+    });
     setTimeout(() => {
       createPlaylist(user.id, newPlaylistName, true);
       dispatch({
@@ -53,7 +66,10 @@ const Sidebar = () => {
           other: user.display_name,
         },
       });
-      setShowMessage(false);
+      setShowMessage({
+        isShow: false,
+        message: "",
+      });
     }, 1000);
 
     setNewPlaylistName("");
@@ -62,99 +78,117 @@ const Sidebar = () => {
 
   return (
     <>
-      {showMessage && <Message />}
-      <div className="h-full min-w-[384px] p-[10px]">
-        <div className="bg-[#262626] rounded-md shadow-md mb-2 p-[10px]">
-          <img
-            className="w-[100px]"
-            src="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_RGB_White.png"
-            alt="spotify-logo"
+      {!showSidebar && (
+        <div
+          className="h-full min-w-[50px] bg-[#1a1919] mr-[10px] text-gray-500 relative"
+          onClick={showSidebarHandler}
+        >
+          <ChevronRightIcon
+            fontSize="large"
+            className="absolute top-[40%] left-[20%]  translate-y-[-40%] hover:text-green-700 cursor-pointer"
           />
         </div>
+      )}
 
-        <div
-          className={`flex flex-col justify-around h-[22%] rounded-md shadow-md mb-2 p-[10px] ${
-            addPlaylist ? "bg-[rgba(64,62,62,0.15)]" : "bg-[#1a1919]"
-          }`}
-        >
-          <SidebarOption title={"Home"} Icon={HomeIcon} />
-          <SidebarOption title={"Search"} Icon={SearchOutlinedIcon} />
-        </div>
+      {showSidebar && (
+        <>
+          {showMessage.isShow && <Message message={showMessage.message} />}
+          <div className="h-full min-w-[384px] p-[10px]">
+            <div className="bg-[#262626] rounded-md shadow-md mb-2 p-[10px]">
+              <img
+                className="w-[100px]"
+                src="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_RGB_White.png"
+                alt="spotify-logo"
+              />
+            </div>
 
-        <div
-          className={`text-white h-[65%] rounded-md shadow-md p-[10px] relative ${
-            addPlaylist ? "bg-[rgba(64,62,62,0.15)]" : "bg-[#1a1919]"
-          }`}
-        >
-          {/* Section */}
-          {addPlaylist && (
             <div
-              className="w-[90%] h-32 absolute 
-        bg-[#262626] rounded-md top-12 z-[9999] transition-all duration-200 ease-in shadow-2xl"
+              className={`flex flex-col justify-around h-[22%] rounded-md shadow-md mb-2 p-[10px] ${
+                addPlaylist ? "bg-[rgba(64,62,62,0.15)]" : "bg-[#1a1919]"
+              }`}
+              onClick={showSidebarHandler}
             >
-              <div className="w-[95%] flex flex-row justify-between items-center">
-                <div className="text-white text-lg p-4 flex flex-row items-center space-x-2 tracking-wide">
-                  <QueueMusicIcon fontSize="large" />
-                  <p>Create New Playlist</p>
+              <SidebarOption title={"Home"} Icon={HomeIcon} />
+              <SidebarOption title={"Search"} Icon={SearchOutlinedIcon} />
+            </div>
+
+            <div
+              className={`text-white h-[65%] rounded-md shadow-md p-[10px] relative ${
+                addPlaylist ? "bg-[rgba(64,62,62,0.15)]" : "bg-[#1a1919]"
+              }`}
+            >
+              {addPlaylist && (
+                <div
+                  className="w-[90%] h-32 absolute 
+        bg-[#262626] rounded-md top-12 z-[9999] transition-all duration-200 ease-in shadow-2xl"
+                >
+                  <div className="w-[95%] flex flex-row justify-between items-center">
+                    <div className="text-white text-lg p-4 flex flex-row items-center space-x-2 tracking-wide">
+                      <QueueMusicIcon fontSize="large" />
+                      <p>Create New Playlist</p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-row ml-[5%] w-[90%] justify-center items-center">
+                    <input
+                      type="text"
+                      placeholder="Enter playlist name"
+                      onChange={(e) => setNewPlaylistName(e.target.value)}
+                      className="w-[80%] border-none outline-none rounded-md p-2 bg-[#404040]"
+                    />
+
+                    <AddBoxIcon
+                      fontSize="large"
+                      className="ml-2 cursor-pointer"
+                      onClick={addPlaylistHandler}
+                    />
+                  </div>
                 </div>
+              )}
+
+              <div className="flex flex-row justify-between mb-4">
+                <SidebarOption title={"Your Library"} Icon={WebStoriesIcon} />
+                <AddIcon
+                  onClick={() => setAddPlaylist((prevState) => !prevState)}
+                  className="mr-2 cursor-pointer"
+                />
               </div>
 
-              <div className="flex flex-row ml-[5%] w-[90%] justify-center items-center">
-                <input
-                  type="text"
-                  placeholder="Enter playlist name"
-                  onChange={(e) => setNewPlaylistName(e.target.value)}
-                  className="w-[80%] border-none outline-none rounded-md p-2 bg-[#404040]"
-                />
+              <div
+                className="max-h-52 overflow-hidden hover:overflow-y-auto scrollbar-thin scrollbar-thumb-[rgba(217,217,217,0.6)] scrollbar-track-transparent transition-all duration-300"
+                onClick={showSidebarHandler}
+              >
+                {playlists.length === 0 && (
+                  <div className="h-[20%] bg-[rgba(187,186,186,0.2)] rounded-md py-4 px-6">
+                    <p className="text-white font-bold tracking-wider">
+                      Create your first playlist
+                    </p>
+                    <p className="mt-2 text-gray-200 text-sm tracking-wider">
+                      It's easy we'll help you
+                    </p>
 
-                <AddBoxIcon
-                  fontSize="large"
-                  className="ml-2 cursor-pointer"
-                  onClick={addPlaylistHandler}
-                />
+                    <button
+                      onClick={() => setAddPlaylist((prevState) => !prevState)}
+                      className="mt-4 bg-white text-black rounded-full py-2 text-sm font-bold px-4"
+                    >
+                      Create playlist
+                    </button>
+                  </div>
+                )}
+                {playlists.length > 0 &&
+                  playlists.map((playlist) => (
+                    <Playlist
+                      key={playlist.id}
+                      imgURL={playlist.imgURL}
+                      title={playlist.title}
+                      other={playlist.other}
+                    />
+                  ))}
               </div>
             </div>
-          )}
-
-          {/* Section */}
-          <div className="flex flex-row justify-between mb-4">
-            <SidebarOption title={"Your Library"} Icon={WebStoriesIcon} />
-            <AddIcon
-              onClick={() => setAddPlaylist((prevState) => !prevState)}
-              className="mr-2 cursor-pointer"
-            />
           </div>
-
-          <div className="max-h-52 overflow-hidden hover:overflow-y-auto scrollbar-thin scrollbar-thumb-[rgba(217,217,217,0.6)] scrollbar-track-transparent transition-all duration-300">
-            {playlists.length === 0 && (
-              <div className="h-[20%] bg-[rgba(187,186,186,0.2)] rounded-md py-4 px-6">
-                <p className="text-white font-bold tracking-wider">
-                  Create your first playlist
-                </p>
-                <p className="mt-2 text-gray-200 text-sm tracking-wider">
-                  It's easy we'll help you
-                </p>
-
-                <button
-                  onClick={() => setAddPlaylist((prevState) => !prevState)}
-                  className="mt-4 bg-white text-black rounded-full py-2 text-sm font-bold px-4"
-                >
-                  Create playlist
-                </button>
-              </div>
-            )}
-            {playlists.length > 0 &&
-              playlists.map((playlist) => (
-                <Playlist
-                  key={playlist.id}
-                  imgURL={playlist.imgURL}
-                  title={playlist.title}
-                  other={playlist.other}
-                />
-              ))}
-          </div>
-        </div>
-      </div>
+        </>
+      )}
     </>
   );
 };
