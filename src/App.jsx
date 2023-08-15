@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import SpotifyWebApi from "spotify-web-api-js";
 import Login from "./components/Login";
 import Player from "./components/Player";
@@ -10,66 +10,82 @@ const spotify = new SpotifyWebApi();
 function App() {
   const [{ token }, dispatch] = useDataLayerValue();
 
-  useEffect(() => {
+  const fetchLikedSongs = async () => {
+    try {
+      const likedSongs = await spotify.getMySavedTracks();
+
+      dispatch({
+        type: "ADD_PLAYLIST",
+        playlist: {
+          id: 1,
+          title: "Liked Songs",
+          imgURL:
+            "https://spotify-static-clone.netlify.app/images/likedsongs.jpg",
+          other: likedSongs.total + " songs",
+        },
+      });
+    } catch (error) {
+      console.log("Error feting liked songs ", error);
+    }
+  };
+
+  const fetchPlaylists = async () => {
+    try {
+      const playlists = await spotify.getUserPlaylists();
+      playlists.items.map((item) => {
+        dispatch({
+          type: "ADD_PLAYLIST",
+          playlist: {
+            id: item.id,
+            title: item.name,
+            imgURL:
+              item.images.length === 0
+                ? "https://community.spotify.com/t5/image/serverpage/image-id/25294i2836BD1C1A31BDF2?v=1.0"
+                : item.images[0].url,
+            other: item.owner.display_name,
+          },
+        });
+      });
+    } catch (error) {
+      console.log("Error fetching playlists ", error);
+    }
+  };
+
+  const setAccessTokenAndFetchUser = async (_token) => {
+    dispatch({
+      type: "SET_TOKEN",
+      token: _token,
+    });
+
+    spotify.setAccessToken(_token);
+
+    try {
+      const user = await spotify.getMe();
+      dispatch({
+        type: "SET_USER",
+        user,
+      });
+    } catch (error) {
+      console.log("Error finding user: ", error);
+    }
+  };
+
+  const handleTokenAndUser = () => {
     const hash = getTokenFromUrl();
     window.location.hash = "";
 
     const _token = hash.access_token;
 
     if (_token) {
-      dispatch({
-        type: "SET_TOKEN",
-        token: _token,
-      });
-
-      spotify.setAccessToken(_token);
-
-      spotify.getMe().then((user) => {
-        dispatch({
-          type: "SET_USER",
-          user,
-        });
-      });
-
-      // Liked Songs
-      spotify.getMySavedTracks().then((savedTracks) => {
-        // console.log(savedTracks);
-        dispatch({
-          type: "ADD_PLAYLIST",
-          playlist: {
-            id: 1,
-            title: "Liked Songs",
-            imgURL:
-              "https://spotify-static-clone.netlify.app/images/likedsongs.jpg",
-            other: savedTracks.total + " songs",
-          },
-        });
-      });
-
-      // Playlists
-      spotify.getUserPlaylists().then((playlists) => {
-        // console.log(playlists.items);
-
-        playlists.items.map((item) => {
-          dispatch({
-            type: "ADD_PLAYLIST",
-            playlist: {
-              id: item.id,
-              title: item.name,
-              imgURL: item.images[0].url,
-              other: item.owner.display_name,
-            },
-          });
-        });
-      });
-
-      // spotify.getPlaylist().then((playlist) => {
-      //   console.log(playlist);
-      // });
+      setAccessTokenAndFetchUser(_token);
+      fetchLikedSongs();
+      fetchPlaylists();
     }
-  }, []);
+  };
 
-  // console.log(playlists);
+  useEffect(() => {
+    handleTokenAndUser();
+  }, []);
 
   return (
     <>
@@ -80,3 +96,27 @@ function App() {
 }
 
 export default App;
+
+/*
+ // Define a function to create a new playlist
+        const createPlaylist = async (userId, playlistName, isPublic) => {
+          try {
+            // Use the .createPlaylist() method to create a new playlist
+            const playlist = await spotify.createPlaylist(userId, {
+              name: playlistName,
+              public: isPublic,
+            });
+
+            // Log the created playlist details
+            console.log("Created Playlist:", playlist);
+          } catch (error) {
+            console.error("Error:", error);
+          }
+        };
+
+        // Call the function to create a new playlist
+        // Replace 'USER_ID' with the ID of the user you want to create the playlist for
+        // Replace 'PLAYLIST_NAME' with the desired name of the playlist
+        // Set 'IS_PUBLIC' to true if the playlist should be public, or false if it should be private
+        createPlaylist("31nnblugrkzx5brnmqftyryqp4pq", "Jay Shree Ram", true);
+*/

@@ -25,12 +25,22 @@ const reducer = (state, action) => {
       };
 
     case "ADD_PLAYLIST":
+      let updatedPlaylists;
+      if (action.playlist.id === 2) {
+        updatedPlaylists = [
+          state.playlists[0],
+          action.playlist,
+          ...state.playlists.slice(1),
+        ];
+      } else if (action.playlist.id === 1) {
+        updatedPlaylists = [action.playlist, ...state.playlists];
+      } else {
+        updatedPlaylists = [...state.playlists, action.playlist];
+      }
+
       return {
         ...state,
-        playlists:
-          action.playlist.id === 1
-            ? [action.playlist, ...state.playlists]
-            : [...state.playlists, action.playlist],
+        playlists: updatedPlaylists,
       };
 
     default:
