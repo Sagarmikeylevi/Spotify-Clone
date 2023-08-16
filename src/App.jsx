@@ -10,6 +10,26 @@ const spotify = new SpotifyWebApi();
 function App() {
   const [{ token }, dispatch] = useDataLayerValue();
 
+  const fetchSponsoredPlaylist = async () => {
+    try {
+      const sponsoredPlaylist = await spotify.getPlaylist(
+        "7BpibltBeSLWXvFOxRQCHZ"
+      );
+
+      // console.log(sponsoredPlaylist.images[0].url)
+      dispatch({
+        type: "ADD_SPONSOREDPLAYLIST",
+        sponsoredPlaylist: {
+          title: sponsoredPlaylist.name,
+          imgURL: sponsoredPlaylist.images[0].url,
+        },
+      });
+      console.log("Sponsored Playlist ---->", sponsoredPlaylist);
+    } catch (error) {
+      console.log("Error fetching sponsored playlist: ", error);
+    }
+  };
+
   const fetchLikedSongs = async () => {
     try {
       const likedSongs = await spotify.getMySavedTracks();
@@ -70,7 +90,7 @@ function App() {
     }
   };
 
-  const handleTokenAndUser = () => {
+  const handleTokenAndUser = async () => {
     const hash = getTokenFromUrl();
     window.location.hash = "";
 
@@ -80,6 +100,7 @@ function App() {
       setAccessTokenAndFetchUser(_token);
       fetchLikedSongs();
       fetchPlaylists();
+      fetchSponsoredPlaylist();
     }
   };
 

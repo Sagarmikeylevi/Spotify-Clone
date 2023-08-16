@@ -1,6 +1,7 @@
 import Sidebar from "./Sidebar";
 import Body from "./Body";
 import Footer from "./Footer";
+import "./custom-scrollbar.css";
 
 const Player = () => {
   return (

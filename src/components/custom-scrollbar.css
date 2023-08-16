@@ -1,0 +1,6 @@
+/* custom-scrollbar.css */
+
+/* Hide the default scrollbar */
+::-webkit-scrollbar {
+  display: none;
+}

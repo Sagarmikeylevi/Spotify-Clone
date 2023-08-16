@@ -1,6 +1,10 @@
+import Home from "./Home";
+
 const Body = () => {
   return (
-    <div className="h-full w-[96%] bg-gradient-to-br from-gray-800 via-gray-700 to-gray-600  opacity-40"></div>
+    <div className="h-full w-[96%] rounded-md mt-3 ">
+      <Home />
+    </div>
   );
 };
 

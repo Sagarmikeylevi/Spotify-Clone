@@ -5,10 +5,11 @@ export const initialState = {
   item: null,
   token: null,
   showSidebar: true,
+  sponsoredPlaylist: {},
 };
 
 const reducer = (state, action) => {
-  // console.log("action ---> ", action);
+  console.log("action ---> ", action);
 
   // Action --> type, [playload]
 
@@ -48,6 +49,12 @@ const reducer = (state, action) => {
       return {
         ...state,
         showSidebar: !state.showSidebar,
+      };
+
+    case "ADD_SPONSOREDPLAYLIST":
+      return {
+        ...state,
+        sponsoredPlaylist: action.sponsoredPlaylist,
       };
 
     default:
