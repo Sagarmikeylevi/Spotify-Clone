@@ -1,9 +1,7 @@
 import { useDataLayerValue } from "../DataLayer";
 
 const Sponsor = () => {
-  const [{ showSidebar, sponsoredPlaylist }, dispatch] = useDataLayerValue();
-
-  console.log("Systuum --->", sponsoredPlaylist);
+  const [{ showSidebar, sponsoredPlaylist }] = useDataLayerValue();
   return (
     <div
       className={`h-56 rounded-md text-white relative ${

@@ -17,11 +17,8 @@ const spotify = new SpotifyWebApi();
 const Sidebar = () => {
   const [addPlaylist, setAddPlaylist] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState("");
-  const [showMessage, setShowMessage] = useState({
-    isShow: false,
-    message: "",
-  });
-  const [{ playlists, user, showSidebar }, dispatch] = useDataLayerValue();
+  const [{ playlists, user, showSidebar, showMessage }, dispatch] =
+    useDataLayerValue();
 
   const showSidebarHandler = () => {
     dispatch({
@@ -50,12 +47,22 @@ const Sidebar = () => {
       return;
     }
 
-    setShowMessage({
-      isShow: true,
-      message: "Playlist Created",
+    dispatch({
+      type: "SHOW_MESSAGE",
+      showMessage: {
+        isShow: true,
+        message: "Playlist Created",
+      },
     });
     setTimeout(() => {
       createPlaylist(user.id, newPlaylistName, true);
+      dispatch({
+        type: "SHOW_MESSAGE",
+        showMessage: {
+          isShow: false,
+          message: null,
+        },
+      });
       dispatch({
         type: "ADD_PLAYLIST",
         playlist: {
@@ -66,10 +73,7 @@ const Sidebar = () => {
           other: user.display_name,
         },
       });
-      setShowMessage({
-        isShow: false,
-        message: "",
-      });
+      
     }, 1000);
 
     setNewPlaylistName("");

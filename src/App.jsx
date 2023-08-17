@@ -16,7 +16,6 @@ function App() {
         "7BpibltBeSLWXvFOxRQCHZ"
       );
 
-      // console.log(sponsoredPlaylist.images[0].url)
       dispatch({
         type: "ADD_SPONSOREDPLAYLIST",
         sponsoredPlaylist: {
@@ -24,7 +23,7 @@ function App() {
           imgURL: sponsoredPlaylist.images[0].url,
         },
       });
-      console.log("Sponsored Playlist ---->", sponsoredPlaylist);
+      // console.log("Sponsored Playlist ---->", sponsoredPlaylist);
     } catch (error) {
       console.log("Error fetching sponsored playlist: ", error);
     }

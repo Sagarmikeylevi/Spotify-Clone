@@ -6,6 +6,10 @@ export const initialState = {
   token: null,
   showSidebar: true,
   sponsoredPlaylist: {},
+  showMessage: {
+    isShow: false,
+    message: null,
+  },
 };
 
 const reducer = (state, action) => {
@@ -55,6 +59,21 @@ const reducer = (state, action) => {
       return {
         ...state,
         sponsoredPlaylist: action.sponsoredPlaylist,
+      };
+
+    case "LOGOUT":
+      return {
+        ...state,
+        token: null,
+      };
+
+    case "SHOW_MESSAGE":
+      return {
+        ...state,
+        showMessage: {
+          isShow: action.showMessage.isShow,
+          message: action.showMessage.message,
+        },
       };
 
     default:

@@ -1,10 +1,64 @@
+import { useState } from "react";
 import Home from "./Home";
+import { useDataLayerValue } from "../DataLayer";
+import Message from "./UI/Message";
 
 const Body = () => {
+  const [showLogout, setShowLogout] = useState(false);
+  const [{ showMessage, user }, dispatch] = useDataLayerValue();
+  console.log("USER ---> ", user);
+  const logOutHandler = () => {
+    // console.log("Token -----> ", token);
+    dispatch({
+      type: "SHOW_MESSAGE",
+      showMessage: {
+        isShow: true,
+        message: "Logging Out",
+      },
+    });
+    setTimeout(() => {
+      dispatch({
+        type: "SHOW_MESSAGE",
+        showMessage: {
+          isShow: false,
+          message: null,
+        },
+      });
+      dispatch({
+        type: "LOGOUT",
+      });
+    }, 1000);
+  };
+
   return (
-    <div className="h-full w-[96%] rounded-md mt-3 ">
-      <Home />
-    </div>
+    <>
+      {showMessage.isShow && <Message message={showMessage.message} />}
+      <div className="h-full w-[96%] rounded-md mt-3 bg-gradient-to-br from-gray-800 via-gray-700 to-gray-600 relative">
+        <div className="absolute top-2 right-4  mb-2 flex flex-row space-x-4 items-center ">
+          <p className="text-xs text-black bg-white px-4 py-2 shadow-lg rounded-full cursor-pointer font-bold">
+            Explore Premium
+          </p>
+          <div
+            className="h-10 w-10 bg-black rounded-full flex justify-center items-center shadow-lg"
+            onClick={() => setShowLogout((prevState) => !prevState)}
+          >
+            <img
+              className="h-8 w-8 rounded-full cursor-pointer"
+              src={`${!user ? "" : user.images[0].url}`}
+              alt="Profile_pic"
+            />
+          </div>
+          <div
+            className={`absolute top-11 right-[-0.6rem] px-4 py-2 text-white bg-green-600 rounded-md text-sm z-[1000] shadow-lg font-bold cursor-pointer ${
+              showLogout ? "inline-block" : "hidden"
+            }`}
+          >
+            <p onClick={logOutHandler}>Log Out</p>
+          </div>
+        </div>
+        <Home />
+      </div>
+    </>
   );
 };
 
