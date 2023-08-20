@@ -13,7 +13,7 @@ export const initialState = {
 };
 
 const reducer = (state, action) => {
-  console.log("action ---> ", action);
+  // console.log("action ---> ", action);
 
   // Action --> type, [playload]
 

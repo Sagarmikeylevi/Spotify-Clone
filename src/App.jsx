@@ -16,6 +16,12 @@ function App() {
         "7BpibltBeSLWXvFOxRQCHZ"
       );
 
+      const searchResults = await spotify.search("Punjabi 101", ["playlist"], {
+        limit: 10,
+      });
+
+      console.log("SearchResults ---->" , searchResults);
+
       dispatch({
         type: "ADD_SPONSOREDPLAYLIST",
         sponsoredPlaylist: {

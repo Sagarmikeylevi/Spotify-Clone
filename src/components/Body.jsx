@@ -5,8 +5,8 @@ import Message from "./UI/Message";
 
 const Body = () => {
   const [showLogout, setShowLogout] = useState(false);
-  const [{ showMessage, user }, dispatch] = useDataLayerValue();
-  console.log("USER ---> ", user);
+  const [{ showMessage, user, showSidebar }, dispatch] = useDataLayerValue();
+  // console.log("USER ---> ", user);
   const logOutHandler = () => {
     // console.log("Token -----> ", token);
     dispatch({
@@ -29,12 +29,21 @@ const Body = () => {
       });
     }, 1000);
   };
-
+// background-image: linear-gradient(135deg, #434343 10%, #000000 100%);
   return (
     <>
       {showMessage.isShow && <Message message={showMessage.message} />}
-      <div className="h-full w-[96%] rounded-md mt-3 bg-gradient-to-br from-gray-800 via-gray-700 to-gray-600 relative">
-        <div className="absolute top-2 right-4  mb-2 flex flex-row space-x-4 items-center ">
+      <div
+        className="h-[98%] w-[96%] rounded-md mt-3 relative "
+        style={{
+          backgroundImage: "linear-gradient(180deg, #2c2a2a 10%, #000000 100%)",
+        }}
+      >
+        <div
+          className={`absolute top-2 right-4  mb-2 flex flex-row space-x-4 items-center z-[1000] ${
+            showSidebar ? "hidden sm:flex" : ""
+          } `}
+        >
           <p className="text-xs text-black bg-white px-4 py-2 shadow-lg rounded-full cursor-pointer font-bold">
             Explore Premium
           </p>

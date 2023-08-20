@@ -1,11 +1,10 @@
 import Sidebar from "./Sidebar";
 import Body from "./Body";
 import Footer from "./Footer";
-import "./custom-scrollbar.css";
 
 const Player = () => {
   return (
-    <div className="h-screen flex flex-row bg-[#0d0d0d] relative">
+    <div className="h-[98%] w-[98%] flex flex-row bg-[#0d0d0d] absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] rounded-md">
       <Sidebar />
       <Body />
       <Footer />
