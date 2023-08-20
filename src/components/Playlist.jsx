@@ -9,7 +9,7 @@ const Playlist = ({ imgURL, title, other }) => {
 
       <div className="flex flex-col justify-center">
         <p className="tracking-wide font-semibold text-[#d9d9d9]">
-          {title.length > 12 ? title.slice(0, 20) + "..." : title}
+          {title.length > 20 ? title.slice(0, 20) + "..." : title}
         </p>
         <p className="text-sm text-[#bfbfbf]">
           Playlist <span className="ml-1 text-xl font-bold">.</span>{" "}

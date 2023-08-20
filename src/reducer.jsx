@@ -10,6 +10,7 @@ export const initialState = {
     isShow: false,
     message: null,
   },
+  playlistCards: [],
 };
 
 const reducer = (state, action) => {
@@ -74,6 +75,17 @@ const reducer = (state, action) => {
           isShow: action.showMessage.isShow,
           message: action.showMessage.message,
         },
+      };
+
+    case "ADD_PLAYLIST_CARD":
+      const newPlaylistCard = {
+        heading: action.cardDetails.heading,
+        items: action.cardDetails.items,
+      };
+
+      return {
+        ...state,
+        playlistCards: [...state.playlistCards, newPlaylistCard],
       };
 
     default:

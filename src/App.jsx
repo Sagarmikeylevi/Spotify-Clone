@@ -10,17 +10,32 @@ const spotify = new SpotifyWebApi();
 function App() {
   const [{ token }, dispatch] = useDataLayerValue();
 
+  const fetchPlaylistCards = async (title) => {
+    try {
+      const playlistCards = await spotify.search(title, ["playlist"], {
+        limit: 3,
+      });
+
+      dispatch({
+        type: "ADD_PLAYLIST_CARD",
+        cardDetails: {
+          heading: title,
+          items: playlistCards.playlists.items,
+        },
+      });
+
+      console.log("Playlist Cards ---->", playlistCards);
+      console.log(playlistCards.playlists.items[0].description);
+    } catch (error) {
+      console.log("Error fetching playlist cards: ", error);
+    }
+  };
+
   const fetchSponsoredPlaylist = async () => {
     try {
       const sponsoredPlaylist = await spotify.getPlaylist(
         "7BpibltBeSLWXvFOxRQCHZ"
       );
-
-      const searchResults = await spotify.search("Punjabi 101", ["playlist"], {
-        limit: 10,
-      });
-
-      console.log("SearchResults ---->" , searchResults);
 
       dispatch({
         type: "ADD_SPONSOREDPLAYLIST",
@@ -106,6 +121,8 @@ function App() {
       fetchLikedSongs();
       fetchPlaylists();
       fetchSponsoredPlaylist();
+      fetchPlaylistCards("Punjabi Trending");
+      
     }
   };
 

@@ -27,7 +27,7 @@ const Sponsor = () => {
           alt="sponsored_img"
           className={`ml-4 h-[70%] w-40 rounded-sm ${
             showSidebar
-              ? "hidden md:flex lg:h-[80%] lg:w-52"
+              ? "hidden lg:flex lg:h-[80%] lg:w-52"
               : "md:h-[80%] md:w-52  lg:h-[90%] lg:w-60"
           } `}
         />

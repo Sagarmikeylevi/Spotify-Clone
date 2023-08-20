@@ -34,7 +34,9 @@ const Body = () => {
     <>
       {showMessage.isShow && <Message message={showMessage.message} />}
       <div
-        className="h-[98%] w-[96%] rounded-md mt-3 relative "
+        className={`h-[98%] ${
+          showSidebar ? "hidden md:inline-block md:w-[50%] lg:w-[70%]" : "w-[96%]"
+        }  rounded-md mt-3 relative`}
         style={{
           backgroundImage: "linear-gradient(180deg, #2c2a2a 10%, #000000 100%)",
         }}
