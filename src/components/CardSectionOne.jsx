@@ -1,8 +1,9 @@
 import { useDataLayerValue } from "../DataLayer";
 import Card from "./Card";
 
-const CardSectionOne = ({ isArtist, HeadingIcon }) => {
+const CardSectionOne = ({ isArtist, HeadingIcon, index }) => {
   const [{ playlistCards, suggestedArtist }] = useDataLayerValue();
+  console.log("playlistCards ---->", playlistCards);
   return (
     <div
       className={`mt-8 ${
@@ -14,11 +15,11 @@ const CardSectionOne = ({ isArtist, HeadingIcon }) => {
           {isArtist
             ? "Suggested artists"
             : playlistCards.length > 0
-            ? playlistCards[0].heading
+            ? playlistCards[index].heading
             : ""}
         </h3>
         <img
-          className={`h-6 w-6 ${isArtist ? "mt-2" : ""}`}
+          className={`h-6 w-6 ${isArtist ? "mt-2" : "mt-1"}`}
           src={HeadingIcon}
           alt="heading_icons"
         />
@@ -31,7 +32,7 @@ const CardSectionOne = ({ isArtist, HeadingIcon }) => {
       >
         {!isArtist &&
           playlistCards.length > 0 &&
-          playlistCards[0].items.map((playlist) => (
+          playlistCards[index].items.map((playlist) => (
             <Card
               key={playlist.id}
               imgURL={playlist.images[0].url}

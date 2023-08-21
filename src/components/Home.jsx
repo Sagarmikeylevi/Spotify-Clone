@@ -8,10 +8,17 @@ const Home = () => {
       <CardSectionOne
         isArtist={false}
         HeadingIcon="https://cdn-icons-png.flaticon.com/128/891/891010.png"
+        index="0"
       />
       <CardSectionOne
         isArtist={true}
         HeadingIcon="https://cdn-icons-png.flaticon.com/128/9960/9960557.png"
+        index="-1"
+      />
+      <CardSectionOne
+        isArtist={false}
+        HeadingIcon="https://cdn-icons-png.flaticon.com/128/3529/3529417.png"
+        index="1"
       />
     </div>
   );

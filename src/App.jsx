@@ -25,14 +25,6 @@ function App() {
         imgURL: artist.artists.items[0].images[0].url,
       },
     });
-
-    // const talha = await spotify.search("Talha Anjum", ["artist"], {
-    // //   limit: 1,
-    // // });
-
-    // // const kaifi = await spotify.search("Kaifi Khalil", ["artist"], {
-    // //   limit: 1,
-    // // });
   };
 
   const fetchPlaylistCards = async (title) => {
@@ -48,8 +40,6 @@ function App() {
           items: playlistCards.playlists.items,
         },
       });
-
-      console.log(playlistCards.playlists.items[0].description);
     } catch (error) {
       console.log("Error fetching playlist cards: ", error);
     }
@@ -145,9 +135,11 @@ function App() {
       fetchPlaylists();
       fetchSponsoredPlaylist();
       fetchPlaylistCards("Punjabi Trending");
+      fetchPlaylistCards("Desi Hip-Hop");
       fetchArtist("Shubh");
       fetchArtist("Talha Anjum");
       fetchArtist("Kaifi Khalil");
+      
     }
   };
 
