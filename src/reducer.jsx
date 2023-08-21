@@ -11,6 +11,7 @@ export const initialState = {
     message: null,
   },
   playlistCards: [],
+  suggestedArtist: [],
 };
 
 const reducer = (state, action) => {
@@ -86,6 +87,18 @@ const reducer = (state, action) => {
       return {
         ...state,
         playlistCards: [...state.playlistCards, newPlaylistCard],
+      };
+
+    case "ADD_ARTIST":
+      const newArtist = {
+        id: action.artistDetails.id,
+        name: action.artistDetails.name,
+        imgURL: action.artistDetails.imgURL,
+      };
+
+      return {
+        ...state,
+        suggestedArtist: [...state.suggestedArtist, newArtist],
       };
 
     default:

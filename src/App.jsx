@@ -10,6 +10,31 @@ const spotify = new SpotifyWebApi();
 function App() {
   const [{ token }, dispatch] = useDataLayerValue();
 
+  const fetchArtist = async (name) => {
+    const artist = await spotify.search(name, ["artist"], {
+      limit: 1,
+    });
+
+    // console.log("Artist --->", artist.artists.items[0].images[0].url);
+
+    dispatch({
+      type: "ADD_ARTIST",
+      artistDetails: {
+        id: artist.artists.items[0].id,
+        name,
+        imgURL: artist.artists.items[0].images[0].url,
+      },
+    });
+
+    // const talha = await spotify.search("Talha Anjum", ["artist"], {
+    // //   limit: 1,
+    // // });
+
+    // // const kaifi = await spotify.search("Kaifi Khalil", ["artist"], {
+    // //   limit: 1,
+    // // });
+  };
+
   const fetchPlaylistCards = async (title) => {
     try {
       const playlistCards = await spotify.search(title, ["playlist"], {
@@ -24,7 +49,6 @@ function App() {
         },
       });
 
-      console.log("Playlist Cards ---->", playlistCards);
       console.log(playlistCards.playlists.items[0].description);
     } catch (error) {
       console.log("Error fetching playlist cards: ", error);
@@ -44,7 +68,6 @@ function App() {
           imgURL: sponsoredPlaylist.images[0].url,
         },
       });
-      // console.log("Sponsored Playlist ---->", sponsoredPlaylist);
     } catch (error) {
       console.log("Error fetching sponsored playlist: ", error);
     }
@@ -122,7 +145,9 @@ function App() {
       fetchPlaylists();
       fetchSponsoredPlaylist();
       fetchPlaylistCards("Punjabi Trending");
-      
+      fetchArtist("Shubh");
+      fetchArtist("Talha Anjum");
+      fetchArtist("Kaifi Khalil");
     }
   };
 
@@ -139,27 +164,3 @@ function App() {
 }
 
 export default App;
-
-/*
- // Define a function to create a new playlist
-        const createPlaylist = async (userId, playlistName, isPublic) => {
-          try {
-            // Use the .createPlaylist() method to create a new playlist
-            const playlist = await spotify.createPlaylist(userId, {
-              name: playlistName,
-              public: isPublic,
-            });
-
-            // Log the created playlist details
-            console.log("Created Playlist:", playlist);
-          } catch (error) {
-            console.error("Error:", error);
-          }
-        };
-
-        // Call the function to create a new playlist
-        // Replace 'USER_ID' with the ID of the user you want to create the playlist for
-        // Replace 'PLAYLIST_NAME' with the desired name of the playlist
-        // Set 'IS_PUBLIC' to true if the playlist should be public, or false if it should be private
-        createPlaylist("31nnblugrkzx5brnmqftyryqp4pq", "Jay Shree Ram", true);
-*/
