@@ -3,7 +3,6 @@ import Card from "./Card";
 
 const CardSectionOne = ({ isArtist, HeadingIcon, index }) => {
   const [{ playlistCards, suggestedArtist }] = useDataLayerValue();
-  console.log("playlistCards ---->", playlistCards);
   return (
     <div
       className={`mt-8 ${

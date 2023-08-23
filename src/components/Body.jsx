@@ -2,13 +2,14 @@ import { useState } from "react";
 import Home from "./Home";
 import { useDataLayerValue } from "../DataLayer";
 import Message from "./UI/Message";
+import Search from "./Search";
 
 const Body = () => {
   const [showLogout, setShowLogout] = useState(false);
   const [{ showMessage, user, showSidebar }, dispatch] = useDataLayerValue();
-  // console.log("USER ---> ", user);
+  const [showHome, setShowHome] = useState(false);
+
   const logOutHandler = () => {
-    // console.log("Token -----> ", token);
     dispatch({
       type: "SHOW_MESSAGE",
       showMessage: {
@@ -29,13 +30,15 @@ const Body = () => {
       });
     }, 1000);
   };
-// background-image: linear-gradient(135deg, #434343 10%, #000000 100%);
+
   return (
     <>
       {showMessage.isShow && <Message message={showMessage.message} />}
       <div
         className={`h-[98%] ${
-          showSidebar ? "hidden md:inline-block md:w-[50%] lg:w-[70%]" : "w-[96%]"
+          showSidebar
+            ? "hidden md:inline-block md:w-[50%] lg:w-[70%]"
+            : "w-[96%]"
         }  rounded-md mt-3 relative`}
         style={{
           backgroundImage: "linear-gradient(180deg, #2c2a2a 10%, #000000 100%)",
@@ -46,7 +49,7 @@ const Body = () => {
             showSidebar ? "hidden sm:flex" : ""
           } `}
         >
-          <p className="text-xs text-black bg-white px-4 py-2 shadow-lg rounded-full cursor-pointer font-bold">
+          <p className="hidden sm:flex text-xs text-black bg-white px-4 py-2 shadow-lg rounded-full cursor-pointer font-bold">
             Explore Premium
           </p>
           <div
@@ -67,7 +70,8 @@ const Body = () => {
             <p onClick={logOutHandler}>Log Out</p>
           </div>
         </div>
-        <Home />
+        {!showHome && <Search />}
+        {showHome && <Home />}
       </div>
     </>
   );

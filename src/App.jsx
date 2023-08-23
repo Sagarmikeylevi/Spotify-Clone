@@ -15,7 +15,16 @@ function App() {
       limit: 1,
     });
 
-    // console.log("Artist --->", artist.artists.items[0].images[0].url);
+    // Use the .search() method to search for tracks
+    const searchResults = await spotify.search("295", ["track"], {
+      limit: 10,
+    });
+
+    // Extract the list of track results
+    const tracks = searchResults.tracks.items;
+
+    // Log the search results
+    console.log("Search Results:", tracks);
 
     dispatch({
       type: "ADD_ARTIST",
@@ -139,7 +148,6 @@ function App() {
       fetchArtist("Shubh");
       fetchArtist("Talha Anjum");
       fetchArtist("Kaifi Khalil");
-      
     }
   };
 
