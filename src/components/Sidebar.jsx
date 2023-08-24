@@ -73,7 +73,6 @@ const Sidebar = () => {
           other: user.display_name,
         },
       });
-      
     }, 1000);
 
     setNewPlaylistName("");
