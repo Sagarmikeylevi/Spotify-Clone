@@ -3,6 +3,7 @@ import Home from "./Home";
 import { useDataLayerValue } from "../DataLayer";
 import Message from "./UI/Message";
 import Search from "./Search";
+import SongList from "./SongList";
 
 const Body = () => {
   const [showLogout, setShowLogout] = useState(false);
@@ -70,7 +71,8 @@ const Body = () => {
             <p onClick={logOutHandler}>Log Out</p>
           </div>
         </div>
-        {!showHome && <Search />}
+        {/* {!showHome && <Search />} */}
+        {!showHome && <SongList />}
         {showHome && <Home />}
       </div>
     </>

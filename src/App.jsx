@@ -31,6 +31,12 @@ function App() {
         limit: 3,
       });
 
+      const demo = await spotify.search("Still Rollin", ["track"], {
+        limit: 1,
+      });
+
+      console.log(demo);
+
       dispatch({
         type: "ADD_PLAYLIST_CARD",
         cardDetails: {
