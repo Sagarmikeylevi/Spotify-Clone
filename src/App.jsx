@@ -31,16 +31,10 @@ function App() {
         limit: 3,
       });
 
-      const demo = await spotify.search("Still Rollin", ["track"], {
-        limit: 1,
-      });
-
-      console.log(demo);
-
       dispatch({
         type: "ADD_PLAYLIST_CARD",
-        cardDetails: {
-          heading: title,
+        playlistCards: {
+          heading: title ? title : "",
           items: playlistCards.playlists.items,
         },
       });
@@ -70,6 +64,7 @@ function App() {
   const fetchLikedSongs = async () => {
     try {
       const likedSongs = await spotify.getMySavedTracks();
+      console.log("Liked Songs --->", likedSongs.items);
 
       dispatch({
         type: "ADD_PLAYLIST",
@@ -147,7 +142,9 @@ function App() {
   };
 
   useEffect(() => {
-    handleTokenAndUser();
+    setTimeout(() => {
+      handleTokenAndUser();
+    }, 1000);
   }, []);
 
   return (

@@ -8,6 +8,7 @@ import Playlist from "./Playlist";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { useDataLayerValue } from "../DataLayer";
 import { useState } from "react";
 import Message from "./UI/Message";
@@ -97,19 +98,25 @@ const Sidebar = () => {
         <>
           {showMessage.isShow && <Message message={showMessage.message} />}
           <div className="h-full min-w-[384px] p-[10px]">
-            <div className="bg-[#262626] rounded-md shadow-md mb-2 p-[10px]">
+            <div className="group bg-[#262626] rounded-md shadow-md mb-2 p-[10px] relative">
               <img
                 className="w-[100px]"
                 src="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_RGB_White.png"
                 alt="spotify-logo"
               />
+              <div className="hidden group-hover:inline-block absolute top-[50%] left-[95%] translate-x-[-95%] translate-y-[-50%]">
+                <ChevronLeftIcon
+                  fontSize="large"
+                  className="text-white hover:text-green-600 cursor-pointer"
+                  onClick={showSidebarHandler}
+                />
+              </div>
             </div>
 
             <div
               className={`flex flex-col justify-around h-[22%] rounded-md shadow-md mb-2 p-[10px] ${
                 addPlaylist ? "bg-[rgba(64,62,62,0.15)]" : "bg-[#1a1919]"
               }`}
-              onClick={showSidebarHandler}
             >
               <SidebarOption title={"Home"} Icon={HomeIcon} />
               <SidebarOption title={"Search"} Icon={SearchOutlinedIcon} />
@@ -157,10 +164,7 @@ const Sidebar = () => {
                 />
               </div>
 
-              <div
-                className="max-h-52 overflow-hidden hover:overflow-y-auto scrollbar-thin scrollbar-thumb-[rgba(217,217,217,0.6)] scrollbar-track-transparent transition-all duration-300"
-                onClick={showSidebarHandler}
-              >
+              <div className="max-h-52 overflow-hidden hover:overflow-y-auto scrollbar-thin scrollbar-thumb-[rgba(217,217,217,0.6)] scrollbar-track-transparent transition-all duration-300">
                 {playlists.length === 0 && (
                   <div className="h-[20%] bg-[rgba(187,186,186,0.2)] rounded-md py-4 px-6">
                     <p className="text-white font-bold tracking-wider">
@@ -197,5 +201,3 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-
-//

@@ -7,8 +7,10 @@ import SongList from "./SongList";
 
 const Body = () => {
   const [showLogout, setShowLogout] = useState(false);
-  const [{ showMessage, user, showSidebar }, dispatch] = useDataLayerValue();
-  const [showHome, setShowHome] = useState(false);
+  const [
+    { showMessage, user, showSidebar, homePage, SearchPage, showListPage },
+    dispatch,
+  ] = useDataLayerValue();
 
   const logOutHandler = () => {
     dispatch({
@@ -71,9 +73,9 @@ const Body = () => {
             <p onClick={logOutHandler}>Log Out</p>
           </div>
         </div>
-        {/* {!showHome && <Search />} */}
-        {!showHome && <SongList />}
-        {showHome && <Home />}
+        {homePage && <Home />}
+        {SearchPage && <Search />}
+        {showListPage.isOpen && <SongList />}
       </div>
     </>
   );

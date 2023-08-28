@@ -12,6 +12,12 @@ export const initialState = {
   },
   playlistCards: [],
   suggestedArtist: [],
+  homePage: true,
+  SearchPage: false,
+  showListPage: {
+    isOpen: false,
+    items: null,
+  },
 };
 
 const reducer = (state, action) => {
@@ -79,14 +85,9 @@ const reducer = (state, action) => {
       };
 
     case "ADD_PLAYLIST_CARD":
-      const newPlaylistCard = {
-        heading: action.cardDetails.heading,
-        items: action.cardDetails.items,
-      };
-
       return {
         ...state,
-        playlistCards: [...state.playlistCards, newPlaylistCard],
+        playlistCards: [...state.playlistCards, action.playlistCards],
       };
 
     case "ADD_ARTIST":
@@ -99,6 +100,37 @@ const reducer = (state, action) => {
       return {
         ...state,
         suggestedArtist: [...state.suggestedArtist, newArtist],
+      };
+
+    case "OPEN_HOME":
+      return {
+        ...state,
+        homePage: true,
+        SearchPage: false,
+        showListPage: {
+          isOpen: false,
+        },
+      };
+
+    case "OPEN_SEARCH":
+      return {
+        ...state,
+        homePage: false,
+        SearchPage: true,
+        showListPage: {
+          isOpen: false,
+        },
+      };
+
+    case "OPEN_SHOWLIST":
+      return {
+        ...state,
+        homePage: false,
+        SearchPage: false,
+        showListPage: {
+          isOpen: true,
+          items: action.items,
+        },
       };
 
     default:
