@@ -1,6 +1,23 @@
-const Playlist = ({ imgURL, title, other }) => {
+import { useDataLayerValue } from "../DataLayer";
+
+const Playlist = ({ imgURL, title, items, other }) => {
+  const [{}, dispatch] = useDataLayerValue();
+  const showPlaylistHandler = () => {
+    dispatch({
+      type: "OPEN_SHOWLIST",
+      heading: {
+        title,
+        imgURL,
+      },
+      items: items,
+    });
+  };
+
   return (
-    <div className="flex flex-row p-2 rounded-md hover:bg-[rgba(217,217,217,0.1)] cursor-pointer transition-all duration-200">
+    <div
+      className="flex flex-row p-2 rounded-md hover:bg-[rgba(217,217,217,0.1)] cursor-pointer transition-all duration-200"
+      onClick={showPlaylistHandler}
+    >
       <img
         className="h-16 w-16 rounded-md shadow-2xl mr-4"
         src={imgURL}

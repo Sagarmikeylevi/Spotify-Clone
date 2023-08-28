@@ -75,7 +75,9 @@ const Body = () => {
         </div>
         {homePage && <Home />}
         {SearchPage && <Search />}
-        {showListPage.isOpen && <SongList />}
+        {showListPage.isOpen && (
+          <SongList heading={showListPage.heading} items={showListPage.items} />
+        )}
       </div>
     </>
   );

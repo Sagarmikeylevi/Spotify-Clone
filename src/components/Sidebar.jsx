@@ -188,6 +188,7 @@ const Sidebar = () => {
                       key={playlist.id}
                       imgURL={playlist.imgURL}
                       title={playlist.title}
+                      items={playlist.items}
                       other={playlist.other}
                     />
                   ))}

@@ -64,7 +64,7 @@ function App() {
   const fetchLikedSongs = async () => {
     try {
       const likedSongs = await spotify.getMySavedTracks();
-      console.log("Liked Songs --->", likedSongs.items);
+      // console.log("Liked Songs --->", likedSongs.items);
 
       dispatch({
         type: "ADD_PLAYLIST",
@@ -73,6 +73,7 @@ function App() {
           title: "Liked Songs",
           imgURL:
             "https://spotify-static-clone.netlify.app/images/likedsongs.jpg",
+          items: likedSongs.items,
           other: likedSongs.total + " songs",
         },
       });
@@ -84,7 +85,14 @@ function App() {
   const fetchPlaylists = async () => {
     try {
       const playlists = await spotify.getUserPlaylists();
-      playlists.items.map((item) => {
+      console.log("PLAYLIST --->", playlists.items);
+
+      const getTracks = async (playlistID) => {
+        return await spotify.getPlaylistTracks(playlistID);
+      };
+
+      for (const item of playlists.items) {
+        const playlistTracks = await getTracks(item.id);
         dispatch({
           type: "ADD_PLAYLIST",
           playlist: {
@@ -94,10 +102,11 @@ function App() {
               item.images.length === 0
                 ? "https://community.spotify.com/t5/image/serverpage/image-id/25294i2836BD1C1A31BDF2?v=1.0"
                 : item.images[0].url,
+            items: playlistTracks.items,
             other: item.owner.display_name,
           },
         });
-      });
+      }
     } catch (error) {
       console.log("Error fetching playlists ", error);
     }
@@ -142,9 +151,7 @@ function App() {
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      handleTokenAndUser();
-    }, 1000);
+    handleTokenAndUser();
   }, []);
 
   return (

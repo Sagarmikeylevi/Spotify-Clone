@@ -16,6 +16,7 @@ export const initialState = {
   SearchPage: false,
   showListPage: {
     isOpen: false,
+    heading: null,
     items: null,
   },
 };
@@ -129,6 +130,7 @@ const reducer = (state, action) => {
         SearchPage: false,
         showListPage: {
           isOpen: true,
+          heading: action.heading,
           items: action.items,
         },
       };

@@ -3,9 +3,35 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import SearchIcon from "@mui/icons-material/Search";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import { useEffect, useState } from "react";
 
-const SongList = () => {
+const SongList = ({ heading, items }) => {
+  const [textLimit, setTextLimit] = useState(10);
   const [{ showSidebar }] = useDataLayerValue();
+
+  console.log("JAY SHREE RAM ---->", items);
+
+  // Update text limit based on screen size
+  useEffect(() => {
+    const updateTextLimit = () => {
+      if (window.innerWidth < 600) {
+        setTextLimit(15); // Small screen
+      } else if (window.innerWidth < 1024) {
+        showSidebar ? setTextLimit(15) : setTextLimit(25); // Medium screen
+      } else {
+        showSidebar ? setTextLimit(25) : setTextLimit(30); // Large screen
+      }
+    };
+
+    updateTextLimit(); // Call on initial render
+
+    // Update on window resize
+    window.addEventListener("resize", updateTextLimit);
+    return () => {
+      window.removeEventListener("resize", updateTextLimit);
+    };
+  }, []);
+
   return (
     <div className="max-h-[80%] w-[98%] overflow-y-auto scrollbar-thin scrollbar-thumb-[rgba(217,217,217,0.6)] scrollbar-track-transparent transition-all duration-300">
       <div
@@ -17,7 +43,7 @@ const SongList = () => {
       >
         <div className="absolute w-full bottom-0 flex flex-row p-4 space-x-6 text-white items-center lg:p-8">
           <img
-            src="https://i.scdn.co/image/ab67616d0000b2731a8c4618eda885a406958dd0"
+            src={heading.imgURL}
             alt="play_song"
             className={`h-[10rem] rounded-md shadow-2xl ${
               showSidebar ? "lg:h-[12rem]" : "md:h-[12rem] lg:h-[14rem]"
@@ -32,7 +58,7 @@ const SongList = () => {
                   : "sm:text-[3rem] md:text-[4rem] lg:text-[5rem]"
               }`}
             >
-              Still Rollin
+              {heading.title}
             </h2>
             <div className="flex flex-row space-x-4 items-center">
               <div className="flex flex-row items-center space-x-2">
@@ -77,37 +103,61 @@ const SongList = () => {
             "linear-gradient(135deg, rgba(245,247,250,0.2) 10%, rgba(195,207,226,0.1) 100%)",
         }}
       >
-        <div className="group h-[4rem] w-full flex flex-row space-x-8 px-2 relative hover:bg-[rgba(166,166,166,0.38)]">
-          <div className="flex flex-row items-center space-x-4">
-            <span className="text-base text-[#cccccc]">1</span>
-            <img
-              src="https://i.scdn.co/image/ab67616d0000b2731a8c4618eda885a406958dd0"
-              alt=""
-              className="h-[80%]"
-            />
-            <div className="flex flex-col justify-center space-y-1">
-              <p className="text-sm text-white font-bold">Cheques</p>
-              <p className="text-xs text-[#cccccc] font-bold">Shub</p>
+        {items.map((item, index) => {
+          // Mapping over each item
+          const artist = item.track.artists
+            .map((artist) => artist.name)
+            .join(", ");
+
+          return (
+            <div
+              key={index} // Make sure to provide a unique key for each rendered element
+              className="group h-[4rem] w-full flex flex-row space-x-8 px-2 relative hover:bg-[rgba(166,166,166,0.38)]"
+            >
+              <div className="flex flex-row items-center space-x-4">
+                <span className="group-hover:block hidden">
+                  <PlayArrowIcon className="text-white" />
+                </span>
+                <span className="text-base text-[#cccccc] group-hover:hidden transition-all duration-200">
+                  {index + 1}
+                </span>
+
+                <img
+                  src={item.track.album.images[0].url}
+                  alt=""
+                  className="h-[80%]"
+                />
+                <div className="flex flex-col justify-center space-y-1">
+                  <p className="text-sm text-white font-bold">
+                    {item.track.name.length > textLimit
+                      ? item.track.name.slice(0, textLimit) + "..."
+                      : item.track.name}
+                  </p>
+                  <p className="text-xs text-[#cccccc] font-bold">
+                    {artist.length > textLimit
+                      ? artist.slice(0, textLimit) + "..."
+                      : artist}
+                  </p>
+                </div>
+
+                <span className="hidden sm:inline-block text-sm text-[#cccccc] absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
+                  99,297,375
+                </span>
+
+                <span className="text-sm text-[#cccccc] absolute top-[50%] left-[80%] translate-x-[-80%] translate-y-[-50%]">
+                  3:56
+                </span>
+
+                <div className="hidden group-hover:inline-block transition-all duration-200">
+                  <FavoriteBorderIcon className="text-white absolute top-[50%] left-[95%] translate-x-[-95%] translate-y-[-50%] opacity-80 hover:opacity-100" />
+                </div>
+              </div>
             </div>
-
-            <span className="text-sm text-[#cccccc] absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
-              99,297,375
-            </span>
-
-            <span className="text-sm text-[#cccccc] absolute top-[50%] left-[80%] translate-x-[-80%] translate-y-[-50%]">
-              3:56
-            </span>
-
-            <div className="hidden group-hover:inline-block transition-all duration-200">
-              <FavoriteBorderIcon className="text-white absolute top-[50%] left-[95%] translate-x-[-95%] translate-y-[-50%] opacity-80 hover:opacity-100" />
-            </div>
-          </div>
-        </div>
+          );
+        })}
       </div>
     </div>
   );
 };
 
 export default SongList;
-
-
