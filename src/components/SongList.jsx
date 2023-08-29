@@ -12,6 +12,15 @@ const SongList = ({ heading, items }) => {
   const [textLimit, setTextLimit] = useState(10);
   const [{ showSidebar }] = useDataLayerValue();
   const [likedTracks, setLikedTracks] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredItems = items.filter((item) =>
+    item.track.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const searchHandler = (event) => {
+    setSearchQuery(event.target.value);
+  };
 
   useEffect(() => {
     const updateTextLimit = () => {
@@ -123,6 +132,8 @@ const SongList = ({ heading, items }) => {
             type="text"
             className="w-[90%] bg-transparent text-white outline-none font-bold placeholder:text-gray-400 placeholder:tracking-wide"
             placeholder="Search"
+            value={searchQuery}
+            onChange={searchHandler}
           />
         </div>
       </div>
@@ -134,7 +145,7 @@ const SongList = ({ heading, items }) => {
             "linear-gradient(135deg, rgba(245,247,250,0.2) 10%, rgba(195,207,226,0.1) 100%)",
         }}
       >
-        {items.map((item, index) => {
+        {filteredItems.map((item, index) => {
           // Mapping over each item
           const artist = item.track.artists
             .map((artist) => artist.name)
@@ -143,8 +154,6 @@ const SongList = ({ heading, items }) => {
           const formattedDuration = convertMsToMmSs(item.track.duration_ms);
 
           const isLiked = likedTracks.includes(item.track.id);
-
-          console.log(isLiked);
 
           return (
             <div
