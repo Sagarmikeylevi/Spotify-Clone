@@ -1,15 +1,18 @@
 import { useDataLayerValue } from "../DataLayer";
 
-const Playlist = ({ imgURL, title, items, other }) => {
+const Playlist = ({ playlist }) => {
   const [{}, dispatch] = useDataLayerValue();
   const showPlaylistHandler = () => {
     dispatch({
       type: "OPEN_SHOWLIST",
       heading: {
-        title,
-        imgURL,
+        title: playlist.title,
+        imgURL: playlist.imgURL,
+        owner: playlist.owner,
+        ownerIMG: playlist.ownerIMG,
+        other: playlist.other,
       },
-      items: items,
+      items: playlist.items,
     });
   };
 
@@ -20,17 +23,19 @@ const Playlist = ({ imgURL, title, items, other }) => {
     >
       <img
         className="h-16 w-16 rounded-md shadow-2xl mr-4"
-        src={imgURL}
+        src={playlist.imgURL}
         alt="play_list"
       />
 
       <div className="flex flex-col justify-center">
         <p className="tracking-wide font-semibold text-[#d9d9d9]">
-          {title.length > 20 ? title.slice(0, 20) + "..." : title}
+          {playlist.title.length > 20
+            ? playlist.title.slice(0, 20) + "..."
+            : playlist.title}
         </p>
         <p className="text-sm text-[#bfbfbf]">
           Playlist <span className="ml-1 text-xl font-bold">.</span>{" "}
-          <span className="ml-1">{other}</span>
+          <span className="ml-1">{playlist.owner}</span>
         </p>
       </div>
     </div>

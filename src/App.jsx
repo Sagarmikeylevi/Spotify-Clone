@@ -64,7 +64,7 @@ function App() {
   const fetchLikedSongs = async () => {
     try {
       const likedSongs = await spotify.getMySavedTracks();
-      // console.log("Liked Songs --->", likedSongs.items);
+      const user = await spotify.getMe();
 
       dispatch({
         type: "ADD_PLAYLIST",
@@ -74,7 +74,9 @@ function App() {
           imgURL:
             "https://spotify-static-clone.netlify.app/images/likedsongs.jpg",
           items: likedSongs.items,
-          other: likedSongs.total + " songs",
+          owner: user.display_name,
+          ownerIMG: user.images[0].url,
+          other: likedSongs.total,
         },
       });
     } catch (error) {
@@ -85,14 +87,23 @@ function App() {
   const fetchPlaylists = async () => {
     try {
       const playlists = await spotify.getUserPlaylists();
-      console.log("PLAYLIST --->", playlists.items);
+      // console.log(playlists);
+      const trackDetails = await spotify.getTrack("7yLIyyt2BrKXuxss9FBBDb");
+      //7yLIyyt2BrKXuxss9FBBDb
+      // console.log("Lets goo---->", trackDetails);
 
       const getTracks = async (playlistID) => {
         return await spotify.getPlaylistTracks(playlistID);
       };
 
+      const getOwner = async (ownerID) => {
+        return await spotify.getUser(ownerID);
+      };
+
       for (const item of playlists.items) {
         const playlistTracks = await getTracks(item.id);
+        const owner = await getOwner(item.owner.id);
+
         dispatch({
           type: "ADD_PLAYLIST",
           playlist: {
@@ -103,7 +114,9 @@ function App() {
                 ? "https://community.spotify.com/t5/image/serverpage/image-id/25294i2836BD1C1A31BDF2?v=1.0"
                 : item.images[0].url,
             items: playlistTracks.items,
-            other: item.owner.display_name,
+            owner: owner.display_name,
+            ownerIMG: owner.images[0].url,
+            other: item.tracks.total,
           },
         });
       }
@@ -163,3 +176,34 @@ function App() {
 }
 
 export default App;
+
+/*
+
+// ... (Code for setting up Spotify API instance and access token)
+
+// Define a function to check if a specific track is liked by the user
+const isTrackLiked = async (trackId) => {
+  try {
+    // Use the .getMySavedTracks() method to retrieve the user's liked tracks
+    const savedTracksResponse = await spotifyApi.getMySavedTracks({ limit: 50 }); // Adjust the limit if needed
+
+    // Extract the list of saved tracks
+    const savedTracks = savedTracksResponse.items;
+
+    // Check if the desired track ID is in the list of saved tracks
+    const isLiked = savedTracks.some(savedTrack => savedTrack.track.id === trackId);
+
+    // Log the result
+    console.log(`Track ${isLiked ? 'is' : 'is not'} liked by the user.`);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
+
+// Call the function to check if a specific track is liked by the user
+// Replace 'TRACK_ID' with the Spotify track ID you want to check
+isTrackLiked('TRACK_ID');
+
+
+
+*/

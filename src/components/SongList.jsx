@@ -4,14 +4,15 @@ import SearchIcon from "@mui/icons-material/Search";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useEffect, useState } from "react";
+import SpotifyWebApi from "spotify-web-api-js";
+
+const spotify = new SpotifyWebApi();
 
 const SongList = ({ heading, items }) => {
   const [textLimit, setTextLimit] = useState(10);
   const [{ showSidebar }] = useDataLayerValue();
+  const [likedTracks, setLikedTracks] = useState([]);
 
-  console.log("JAY SHREE RAM ---->", items);
-
-  // Update text limit based on screen size
   useEffect(() => {
     const updateTextLimit = () => {
       if (window.innerWidth < 600) {
@@ -23,7 +24,23 @@ const SongList = ({ heading, items }) => {
       }
     };
 
+    const fetchLikedTracks = async () => {
+      try {
+        const savedTracksResponse = await spotify.getMySavedTracks({
+          limit: 50,
+        });
+        const savedTracks = savedTracksResponse.items;
+        const likedTrackIds = savedTracks.map(
+          (savedTrack) => savedTrack.track.id
+        );
+        setLikedTracks(likedTrackIds);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
     updateTextLimit(); // Call on initial render
+    fetchLikedTracks();
 
     // Update on window resize
     window.addEventListener("resize", updateTextLimit);
@@ -31,6 +48,14 @@ const SongList = ({ heading, items }) => {
       window.removeEventListener("resize", updateTextLimit);
     };
   }, []);
+
+  const convertMsToMmSs = (durationMs) => {
+    const totalSeconds = Math.floor(durationMs / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  };
 
   return (
     <div className="max-h-[80%] w-[98%] overflow-y-auto scrollbar-thin scrollbar-thumb-[rgba(217,217,217,0.6)] scrollbar-track-transparent transition-all duration-300">
@@ -58,18 +83,24 @@ const SongList = ({ heading, items }) => {
                   : "sm:text-[3rem] md:text-[4rem] lg:text-[5rem]"
               }`}
             >
-              {heading.title}
+              {heading.title.length > 15
+                ? heading.title.slice(0, 15) + "..."
+                : heading.title}
             </h2>
             <div className="flex flex-row space-x-4 items-center">
               <div className="flex flex-row items-center space-x-2">
                 <img
-                  src="https://i.scdn.co/image/ab67616d0000b2731a8c4618eda885a406958dd0"
+                  src={heading.ownerIMG}
                   alt=""
                   className="h-6 w-6 rounded-full"
                 />
-                <p className="text-sm font-bold md:text-base">Shubh</p>
+                <p className="text-sm font-bold md:text-base">
+                  {heading.owner}
+                </p>
               </div>
-              <span className="text-sm font-bold md:text-base">2023</span>
+              <span className="text-sm font-bold md:text-base">{`${
+                heading.other + " Songs"
+              }`}</span>
             </div>
           </div>
         </div>
@@ -109,6 +140,12 @@ const SongList = ({ heading, items }) => {
             .map((artist) => artist.name)
             .join(", ");
 
+          const formattedDuration = convertMsToMmSs(item.track.duration_ms);
+
+          const isLiked = likedTracks.includes(item.track.id);
+
+          console.log(isLiked);
+
           return (
             <div
               key={index} // Make sure to provide a unique key for each rendered element
@@ -145,11 +182,19 @@ const SongList = ({ heading, items }) => {
                 </span>
 
                 <span className="text-sm text-[#cccccc] absolute top-[50%] left-[80%] translate-x-[-80%] translate-y-[-50%]">
-                  3:56
+                  {formattedDuration}
                 </span>
 
-                <div className="hidden group-hover:inline-block transition-all duration-200">
-                  <FavoriteBorderIcon className="text-white absolute top-[50%] left-[95%] translate-x-[-95%] translate-y-[-50%] opacity-80 hover:opacity-100" />
+                <div
+                  className={` ${
+                    isLiked ? "inline-block" : "hidden group-hover:inline-block"
+                  } transition-all duration-200`}
+                >
+                  {isLiked ? (
+                    <FavoriteIcon className="text-green-500 absolute top-[50%] left-[95%] translate-x-[-95%] translate-y-[-50%] opacity-80 hover:opacity-100" />
+                  ) : (
+                    <FavoriteBorderIcon className="text-white absolute top-[50%] left-[95%] translate-x-[-95%] translate-y-[-50%] opacity-80 hover:opacity-100" />
+                  )}
                 </div>
               </div>
             </div>
