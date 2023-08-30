@@ -76,7 +76,11 @@ const Body = () => {
         {homePage && <Home />}
         {SearchPage && <Search />}
         {showListPage.isOpen && (
-          <SongList heading={showListPage.heading} items={showListPage.items} />
+          <SongList
+            heading={showListPage.heading}
+            items={showListPage.items}
+            isArtist={showListPage.isArtist}
+          />
         )}
       </div>
     </>

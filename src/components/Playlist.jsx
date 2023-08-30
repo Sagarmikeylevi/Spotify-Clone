@@ -10,6 +10,7 @@ const Playlist = ({ playlist }) => {
         imgURL: playlist.imgURL,
         owner: playlist.owner,
         ownerIMG: playlist.ownerIMG,
+        type: playlist.type,
         other: playlist.other,
       },
       items: playlist.items,

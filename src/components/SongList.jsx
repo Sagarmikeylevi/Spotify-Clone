@@ -8,7 +8,7 @@ import SpotifyWebApi from "spotify-web-api-js";
 
 const spotify = new SpotifyWebApi();
 
-const SongList = ({ heading, items }) => {
+const SongList = ({ heading, items, isArtist }) => {
   const [textLimit, setTextLimit] = useState(10);
   const [{ showSidebar }] = useDataLayerValue();
   const [likedTracks, setLikedTracks] = useState([]);
@@ -76,15 +76,38 @@ const SongList = ({ heading, items }) => {
         }}
       >
         <div className="absolute w-full bottom-0 flex flex-row p-4 space-x-6 text-white items-center lg:p-8">
-          <img
-            src={heading.imgURL}
-            alt="play_song"
-            className={`h-[10rem] rounded-md shadow-2xl ${
-              showSidebar ? "lg:h-[12rem]" : "md:h-[12rem] lg:h-[14rem]"
-            } `}
-          />
+          {isArtist ? (
+            <img
+              src={heading.imgURL}
+              alt="play_song"
+              className={`h-[10rem] rounded-full shadow-2xl ${
+                showSidebar ? "lg:h-[14rem]" : "md:h-[12rem] lg:h-[14rem]"
+              } `}
+            />
+          ) : (
+            <img
+              src={heading.imgURL}
+              alt="play_song"
+              className={`h-[10rem] rounded-md shadow-2xl ${
+                showSidebar ? "lg:h-[12rem]" : "md:h-[12rem] lg:h-[14rem]"
+              } `}
+            />
+          )}
+
           <div className="flex flex-col space-y-4">
-            <p className="text-sm font-bold text-white">Album</p>
+            {isArtist ? (
+              <div className="text-base font-bold text-white flex flex-row space-x-1 items-center">
+                <img
+                  src="https://cdn-icons-png.flaticon.com/128/7641/7641727.png"
+                  alt="verified_artist"
+                  className="h-8 w-8"
+                />
+                <p>Verified Artist</p>
+              </div>
+            ) : (
+              <p className="text-sm font-bold text-white">{heading.type}</p>
+            )}
+
             <h2
               className={`text-[2rem] font-extrabold tracking-wide ${
                 showSidebar
@@ -96,21 +119,28 @@ const SongList = ({ heading, items }) => {
                 ? heading.title.slice(0, 15) + "..."
                 : heading.title}
             </h2>
-            <div className="flex flex-row space-x-4 items-center">
-              <div className="flex flex-row items-center space-x-2">
-                <img
-                  src={heading.ownerIMG}
-                  alt=""
-                  className="h-6 w-6 rounded-full"
-                />
-                <p className="text-sm font-bold md:text-base">
-                  {heading.owner}
-                </p>
+
+            {isArtist ? (
+              <p className="text-lg text-white font-bold">
+                <span className="mr-1">12,765,850</span> monthly listeners
+              </p>
+            ) : (
+              <div className="flex flex-row space-x-4 items-center">
+                <div className="flex flex-row items-center space-x-2">
+                  <img
+                    src={heading.ownerIMG}
+                    alt=""
+                    className="h-6 w-6 rounded-full"
+                  />
+                  <p className="text-sm font-bold md:text-base">
+                    {heading.owner}
+                  </p>
+                </div>
+                <span className="text-sm font-bold md:text-base">{`${
+                  heading.other + " Songs"
+                }`}</span>
               </div>
-              <span className="text-sm font-bold md:text-base">{`${
-                heading.other + " Songs"
-              }`}</span>
-            </div>
+            )}
           </div>
         </div>
       </div>
@@ -169,7 +199,11 @@ const SongList = ({ heading, items }) => {
                 </span>
 
                 <img
-                  src={item.track.album.images[0].url}
+                  src={
+                    !item.track.album.images[0]
+                      ? "https://wallpapercave.com/wp/P3EtD4C.jpg"
+                      : item.track.album.images[0].url
+                  }
                   alt=""
                   className="h-[80%]"
                 />

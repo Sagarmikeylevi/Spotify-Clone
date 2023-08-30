@@ -2,7 +2,7 @@ import { useDataLayerValue } from "../DataLayer";
 import Card from "./Card";
 
 const CardSectionOne = ({ isArtist, HeadingIcon, index }) => {
-  const [{playlistCards, suggestedArtist }] = useDataLayerValue();
+  const [{ playlistCards, suggestedArtist }] = useDataLayerValue();
 
   const sectionTitle = isArtist
     ? "Suggested artists"
@@ -14,6 +14,7 @@ const CardSectionOne = ({ isArtist, HeadingIcon, index }) => {
     items.map((item) => (
       <Card
         key={item.id}
+        itemId={item.id}
         imgURL={isArtist ? item.imgURL : item.images[0].url}
         title={item.name}
         description={isArtist ? "Artist" : item.description}

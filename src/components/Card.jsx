@@ -1,6 +1,67 @@
+import SpotifyWebApi from "spotify-web-api-js";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import { useDataLayerValue } from "../DataLayer";
 
-const Card = ({ imgURL, title, description, isArtist }) => {
+const spotify = new SpotifyWebApi();
+
+const Card = ({ itemId, imgURL, title, description, isArtist }) => {
+  const [{}, dispatch] = useDataLayerValue();
+
+  const getPlaylistById = async (itemId) => {
+    try {
+      const itemDetails = await spotify.getPlaylist(itemId);
+      console.log("Item Details:", itemDetails);
+
+      const owner = await spotify.getUser(itemDetails.owner.id);
+
+      dispatch({
+        type: "OPEN_SHOWLIST",
+        heading: {
+          title: title,
+          imgURL: imgURL,
+          owner: owner.display_name,
+          ownerIMG: owner.images[0].url,
+          type: "Playlist",
+          other: itemDetails.tracks.total,
+        },
+        items: itemDetails.tracks.items,
+        isArtist: false,
+      });
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const getArtistById = async (artistId) => {
+    try {
+      const artistDetails = await spotify.getArtist(artistId);
+
+      // console.log("Artist Details:", artistDetails);
+      const artistAlbums = await spotify.getArtistAlbums(artistId);
+
+      console.log(artistAlbums.items[0].name);
+
+      // dispatch({
+      //   type: "OPEN_SHOWLIST",
+      //   heading: {
+      //     title: artistDetails.name,
+      //     imgURL: artistDetails.images[0].url,
+      //   },
+      //   items: artistAlbums.items,
+      //   isArtist: true,
+      // });
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+  const showPlaylistHandler = () => {
+    if (isArtist) {
+      getArtistById(itemId);
+    } else {
+      getPlaylistById(itemId);
+    }
+  };
+
   return (
     <div
       className={`group ${
@@ -32,7 +93,10 @@ const Card = ({ imgURL, title, description, isArtist }) => {
         </p>
       </div>
 
-      <div className="hidden absolute top-[45%] left-[65%] h-12 w-12 rounded-full text-black z-[999] bg-green-400 group-hover:flex justify-center items-center shadow-lg transition-all duration-200">
+      <div
+        className="hidden absolute top-[45%] left-[65%] h-12 w-12 rounded-full text-black z-[999] bg-green-400 group-hover:flex justify-center items-center shadow-lg transition-all duration-200"
+        onClick={showPlaylistHandler}
+      >
         <PlayArrowIcon fontSize="large" />
       </div>
     </div>

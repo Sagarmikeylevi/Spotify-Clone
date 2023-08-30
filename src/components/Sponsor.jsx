@@ -3,7 +3,23 @@ import { useDataLayerValue } from "../DataLayer";
 // background-image: linear-gradient(135deg, #3B2667 10%, #BC78EC 100%);
 
 const Sponsor = () => {
-  const [{ showSidebar, sponsoredPlaylist }] = useDataLayerValue();
+  const [{ showSidebar, sponsoredPlaylist }, dispatch] = useDataLayerValue();
+
+  const playHandler = () => {
+    dispatch({
+      type: "OPEN_SHOWLIST",
+      heading: {
+        title: sponsoredPlaylist.title,
+        imgURL: sponsoredPlaylist.imgURL,
+        owner: sponsoredPlaylist.owner,
+        ownerIMG: sponsoredPlaylist.ownerIMG,
+        type: sponsoredPlaylist.type,
+        other: sponsoredPlaylist.other,
+      },
+      items: sponsoredPlaylist.items,
+      isArtist: false,
+    });
+  };
   return (
     <div
       className={`h-56 w-full rounded-md text-white relative shadow-lg  ${
@@ -74,6 +90,7 @@ const Sponsor = () => {
               ? "lg:text-base lg:px-6"
               : "md:text-base md:px-6 lg:text-lg lg:px-8"
           } `}
+          onClick={playHandler}
         >
           Play
         </button>
@@ -92,6 +109,3 @@ const Sponsor = () => {
 };
 
 export default Sponsor;
-
-
-

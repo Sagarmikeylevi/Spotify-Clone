@@ -49,11 +49,18 @@ function App() {
         "7BpibltBeSLWXvFOxRQCHZ"
       );
 
+      const owner = await spotify.getUser(sponsoredPlaylist.owner.id);
+
       dispatch({
         type: "ADD_SPONSOREDPLAYLIST",
         sponsoredPlaylist: {
           title: sponsoredPlaylist.name,
           imgURL: sponsoredPlaylist.images[0].url,
+          type: sponsoredPlaylist.type,
+          owner: owner.display_name,
+          ownerIMG: owner.images[0].url,
+          other: sponsoredPlaylist.tracks.total,
+          items: sponsoredPlaylist.tracks.items,
         },
       });
     } catch (error) {
@@ -74,6 +81,7 @@ function App() {
           imgURL:
             "https://spotify-static-clone.netlify.app/images/likedsongs.jpg",
           items: likedSongs.items,
+          type: "Playlist",
           owner: user.display_name,
           ownerIMG: user.images[0].url,
           other: likedSongs.total,
@@ -87,10 +95,6 @@ function App() {
   const fetchPlaylists = async () => {
     try {
       const playlists = await spotify.getUserPlaylists();
-      // console.log(playlists);
-      const trackDetails = await spotify.getTrack("7yLIyyt2BrKXuxss9FBBDb");
-      //7yLIyyt2BrKXuxss9FBBDb
-      // console.log("Lets goo---->", trackDetails);
 
       const getTracks = async (playlistID) => {
         return await spotify.getPlaylistTracks(playlistID);
@@ -114,6 +118,7 @@ function App() {
                 ? "https://community.spotify.com/t5/image/serverpage/image-id/25294i2836BD1C1A31BDF2?v=1.0"
                 : item.images[0].url,
             items: playlistTracks.items,
+            type: "Playlist",
             owner: owner.display_name,
             ownerIMG: owner.images[0].url,
             other: item.tracks.total,
