@@ -14,6 +14,7 @@ const Playlist = ({ playlist }) => {
         other: playlist.other,
       },
       items: playlist.items,
+      isArtist: false,
     });
   };
 

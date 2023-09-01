@@ -42,10 +42,6 @@ const Search = () => {
     }
   };
 
-  // if (allResults) {
-  //   allResults.map((track) => console.log(track));
-  // }
-
   return (
     <div className="mt-4 px-4 max-h-[80%] w-[98%] overflow-y-auto scrollbar-thin scrollbar-thumb-[rgba(217,217,217,0.6)] scrollbar-track-transparent transition-all duration-300">
       <div className="w-[20rem] bg-[rgba(86,86,86,0.36)] rounded-full px-3 text-sm py-3 flex flex-row items-center space-x-1 cursor-pointer hover:border-[1px] hover:border-[rgba(255,255,255,0.71)]  transition-all duration-300">

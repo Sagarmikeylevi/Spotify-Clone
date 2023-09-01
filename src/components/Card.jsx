@@ -39,17 +39,17 @@ const Card = ({ itemId, imgURL, title, description, isArtist }) => {
       // console.log("Artist Details:", artistDetails);
       const artistAlbums = await spotify.getArtistAlbums(artistId);
 
-      console.log(artistAlbums.items[0].name);
+      // console.log(artistAlbums);
 
-      // dispatch({
-      //   type: "OPEN_SHOWLIST",
-      //   heading: {
-      //     title: artistDetails.name,
-      //     imgURL: artistDetails.images[0].url,
-      //   },
-      //   items: artistAlbums.items,
-      //   isArtist: true,
-      // });
+      dispatch({
+        type: "OPEN_SHOWLIST",
+        heading: {
+          title: artistDetails.name,
+          imgURL: artistDetails.images[0].url,
+        },
+        items: artistAlbums.items,
+        isArtist: true,
+      });
     } catch (error) {
       console.error("Error:", error);
     }

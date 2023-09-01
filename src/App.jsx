@@ -10,6 +10,37 @@ const spotify = new SpotifyWebApi();
 function App() {
   const [{ token }, dispatch] = useDataLayerValue();
 
+  const currentPlayingSongs = async () => {
+    try {
+      const currentTrack = await spotify.getMyCurrentPlayingTrack();
+
+      // console.log("CURRENT SONG ----->", currentTrack);
+
+      const currentPlaybackState = await spotify.getMyCurrentPlaybackState();
+
+      // console.log(
+      //   "CURRENT SONG STATE ---->",
+      //   currentPlaybackState.device.volume_percent
+      // );
+
+      dispatch({
+        type: "ADD_CURRENTSONG",
+
+        currentSong: {
+          name: currentTrack.item.name,
+          image: currentTrack.item.album.images[0].url,
+          artist: currentTrack.item.artists[0].name,
+          isPlaying: currentTrack.is_playing,
+          durationMs: currentTrack.item.duration_ms,
+          processMs: currentTrack.progress_ms,
+          volume: currentPlaybackState.device.volume_percent,
+        },
+      });
+    } catch (error) {
+      console.log("Error fetching current playing song: ", error);
+    }
+  };
+
   const fetchArtist = async (name) => {
     const artist = await spotify.search(name, ["artist"], {
       limit: 1,
@@ -157,6 +188,7 @@ function App() {
 
     if (_token) {
       setAccessTokenAndFetchUser(_token);
+      currentPlayingSongs();
       fetchLikedSongs();
       fetchPlaylists();
       fetchSponsoredPlaylist();

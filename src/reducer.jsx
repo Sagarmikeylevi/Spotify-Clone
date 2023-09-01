@@ -19,6 +19,7 @@ export const initialState = {
     heading: null,
     items: null,
   },
+  currentPlayingSongs: {},
 };
 
 const reducer = (state, action) => {
@@ -132,7 +133,14 @@ const reducer = (state, action) => {
           isOpen: true,
           heading: action.heading,
           items: action.items,
+          isArtist: action.isArtist,
         },
+      };
+
+    case "ADD_CURRENTSONG":
+      return {
+        ...state,
+        currentPlayingSongs: action.currentSong,
       };
 
     default:

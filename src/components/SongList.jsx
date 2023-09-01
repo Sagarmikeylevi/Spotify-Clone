@@ -14,8 +14,12 @@ const SongList = ({ heading, items, isArtist }) => {
   const [likedTracks, setLikedTracks] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
+  console.log("ISARTIST =", isArtist);
+
   const filteredItems = items.filter((item) =>
-    item.track.name.toLowerCase().includes(searchQuery.toLowerCase())
+    isArtist
+      ? item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      : item.track.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const searchHandler = (event) => {
@@ -80,8 +84,11 @@ const SongList = ({ heading, items, isArtist }) => {
             <img
               src={heading.imgURL}
               alt="play_song"
-              className={`h-[10rem] rounded-full shadow-2xl ${
-                showSidebar ? "lg:h-[14rem]" : "md:h-[12rem] lg:h-[14rem]"
+              className={`h-[10rem] w-[10rem]
+              }  rounded-full shadow-2xl ${
+                showSidebar
+                  ? "lg:h-[14rem] w-[14em]"
+                  : "md:h-[12rem] md:[12rem] lg:h-[14rem] w-[14rem]"
               } `}
             />
           ) : (
@@ -177,13 +184,18 @@ const SongList = ({ heading, items, isArtist }) => {
       >
         {filteredItems.map((item, index) => {
           // Mapping over each item
-          const artist = item.track.artists
-            .map((artist) => artist.name)
-            .join(", ");
 
-          const formattedDuration = convertMsToMmSs(item.track.duration_ms);
+          let artist = "";
 
-          const isLiked = likedTracks.includes(item.track.id);
+          let formattedDuration = "";
+          if (!isArtist) {
+            artist = item.track.artists.map((artist) => artist.name).join(", ");
+            formattedDuration = convertMsToMmSs(item.track.duration_ms);
+          }
+
+          const isLiked = likedTracks.includes(
+            isArtist ? item.id : item.track.id
+          );
 
           return (
             <div
@@ -200,7 +212,11 @@ const SongList = ({ heading, items, isArtist }) => {
 
                 <img
                   src={
-                    !item.track.album.images[0]
+                    isArtist
+                      ? !item.images[0]
+                        ? "https://wallpapercave.com/wp/P3EtD4C.jpg"
+                        : item.images[0].url
+                      : !item.track.album.images[0]
                       ? "https://wallpapercave.com/wp/P3EtD4C.jpg"
                       : item.track.album.images[0].url
                   }
@@ -209,24 +225,33 @@ const SongList = ({ heading, items, isArtist }) => {
                 />
                 <div className="flex flex-col justify-center space-y-1">
                   <p className="text-sm text-white font-bold">
-                    {item.track.name.length > textLimit
+                    {isArtist
+                      ? item.name.length > textLimit
+                        ? item.name.slice(0, textLimit) + "..."
+                        : item.name
+                      : item.track.name.length > textLimit
                       ? item.track.name.slice(0, textLimit) + "..."
                       : item.track.name}
                   </p>
-                  <p className="text-xs text-[#cccccc] font-bold">
-                    {artist.length > textLimit
-                      ? artist.slice(0, textLimit) + "..."
-                      : artist}
-                  </p>
+                  {!isArtist && (
+                    <p className="text-xs text-[#cccccc] font-bold">
+                      {artist.length > textLimit
+                        ? artist.slice(0, textLimit) + "..."
+                        : artist}
+                    </p>
+                  )}
                 </div>
+                {!isArtist && (
+                  <span className="hidden sm:inline-block text-sm text-[#cccccc] absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
+                    99,297,375
+                  </span>
+                )}
 
-                <span className="hidden sm:inline-block text-sm text-[#cccccc] absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
-                  99,297,375
-                </span>
-
-                <span className="text-sm text-[#cccccc] absolute top-[50%] left-[80%] translate-x-[-80%] translate-y-[-50%]">
-                  {formattedDuration}
-                </span>
+                {!isArtist && (
+                  <span className="text-sm text-[#cccccc] absolute top-[50%] left-[80%] translate-x-[-80%] translate-y-[-50%]">
+                    {formattedDuration}
+                  </span>
+                )}
 
                 <div
                   className={` ${
