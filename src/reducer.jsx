@@ -23,10 +23,6 @@ export const initialState = {
 };
 
 const reducer = (state, action) => {
-  // console.log("action ---> ", action);
-
-  // Action --> type, [playload]
-
   switch (action.type) {
     case "SET_USER":
       return {

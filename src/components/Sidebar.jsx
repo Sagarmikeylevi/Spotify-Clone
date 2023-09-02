@@ -13,20 +13,27 @@ import { useDataLayerValue } from "../DataLayer";
 import { useState } from "react";
 import Message from "./UI/Message";
 
+// Initialize the Spotify Web API instance
 const spotify = new SpotifyWebApi();
 
+// Define the Sidebar component
 const Sidebar = () => {
+  // State variables for managing playlist creation form
   const [addPlaylist, setAddPlaylist] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState("");
+
+  // Destructuring values from the data layer context
   const [{ playlists, user, showSidebar, showMessage }, dispatch] =
     useDataLayerValue();
 
+  // Function to toggle the sidebar visibility
   const showSidebarHandler = () => {
     dispatch({
       type: "SHOW_SIDEBAR",
     });
   };
 
+  // Function to create a new playlist
   const createPlaylist = async (userId, playlistName, isPublic) => {
     try {
       // Use the .createPlaylist() method to create a new playlist
@@ -42,12 +49,13 @@ const Sidebar = () => {
     }
   };
 
+  // Function to handle the addition of a new playlist
   const addPlaylistHandler = () => {
-    // console.log(user.display_name);
     if (newPlaylistName.trim().length === 0) {
       return;
     }
 
+    // Show a message indicating that the playlist is being created
     dispatch({
       type: "SHOW_MESSAGE",
       showMessage: {
@@ -55,8 +63,12 @@ const Sidebar = () => {
         message: "Playlist Created",
       },
     });
+
+    // Delayed execution to simulate playlist creation
     setTimeout(() => {
       createPlaylist(user.id, newPlaylistName, true);
+
+      // Hide the message after creation
       dispatch({
         type: "SHOW_MESSAGE",
         showMessage: {
@@ -64,6 +76,8 @@ const Sidebar = () => {
           message: null,
         },
       });
+
+      // Add the new playlist to the data layer
       dispatch({
         type: "ADD_PLAYLIST",
         playlist: {
@@ -76,10 +90,12 @@ const Sidebar = () => {
       });
     }, 1000);
 
+    // Reset the input field and toggle the playlist creation form
     setNewPlaylistName("");
     setAddPlaylist((prevState) => !prevState);
   };
 
+  // Return JSX for the Sidebar component
   return (
     <>
       {!showSidebar && (
@@ -98,6 +114,7 @@ const Sidebar = () => {
         <>
           {showMessage.isShow && <Message message={showMessage.message} />}
           <div className="h-full min-w-[384px] p-[10px]">
+            {/* Sidebar header */}
             <div className="group bg-[#262626] rounded-md shadow-md mb-2 p-[10px] relative">
               <img
                 className="w-[100px]"
@@ -113,6 +130,7 @@ const Sidebar = () => {
               </div>
             </div>
 
+            {/* Sidebar navigation options */}
             <div
               className={`flex flex-col justify-around h-[22%] rounded-md shadow-md mb-2 p-[10px] ${
                 addPlaylist ? "bg-[rgba(64,62,62,0.15)]" : "bg-[#1a1919]"
@@ -122,6 +140,7 @@ const Sidebar = () => {
               <SidebarOption title={"Search"} Icon={SearchOutlinedIcon} />
             </div>
 
+            {/* Playlist section */}
             <div
               className={`text-white h-[65%] rounded-md shadow-md p-[10px] relative ${
                 addPlaylist ? "bg-[rgba(64,62,62,0.15)]" : "bg-[#1a1919]"
@@ -132,6 +151,7 @@ const Sidebar = () => {
                   className="w-[90%] h-32 absolute 
         bg-[#262626] rounded-md top-12 z-[9999] transition-all duration-200 ease-in shadow-2xl"
                 >
+                  {/* Playlist creation form */}
                   <div className="w-[95%] flex flex-row justify-between items-center">
                     <div className="text-white text-lg p-4 flex flex-row items-center space-x-2 tracking-wide">
                       <QueueMusicIcon fontSize="large" />
@@ -156,6 +176,7 @@ const Sidebar = () => {
                 </div>
               )}
 
+              {/* Your Library and Add Playlist button */}
               <div className="flex flex-row justify-between mb-4">
                 <SidebarOption title={"Your Library"} Icon={WebStoriesIcon} />
                 <AddIcon
@@ -164,6 +185,7 @@ const Sidebar = () => {
                 />
               </div>
 
+              {/* List of playlists */}
               <div className="max-h-52 overflow-hidden hover:overflow-y-auto scrollbar-thin scrollbar-thumb-[rgba(217,217,217,0.6)] scrollbar-track-transparent transition-all duration-300">
                 {playlists.length === 0 && (
                   <div className="h-[20%] bg-[rgba(187,186,186,0.2)] rounded-md py-4 px-6">

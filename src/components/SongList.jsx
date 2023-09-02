@@ -1,30 +1,38 @@
-import { useDataLayerValue } from "../DataLayer";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import SearchIcon from "@mui/icons-material/Search";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import { useEffect, useState } from "react";
-import SpotifyWebApi from "spotify-web-api-js";
+// Import necessary dependencies and components
+import { useDataLayerValue } from "../DataLayer"; // Importing a custom hook
+import PlayArrowIcon from "@mui/icons-material/PlayArrow"; // Play button icon
+import SearchIcon from "@mui/icons-material/Search"; // Search icon
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder"; // Empty heart icon
+import FavoriteIcon from "@mui/icons-material/Favorite"; // Filled heart icon
+import { useEffect, useState } from "react"; // React hooks for managing state and effects
+import SpotifyWebApi from "spotify-web-api-js"; // Spotify Web API library
 
+// Create an instance of the SpotifyWebApi
 const spotify = new SpotifyWebApi();
 
+// Define the SongList component
 const SongList = ({ heading, items, isArtist }) => {
-  const [textLimit, setTextLimit] = useState(10);
-  const [{ showSidebar }] = useDataLayerValue();
-  const [likedTracks, setLikedTracks] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
+  // Define and initialize state variables
+  const [textLimit, setTextLimit] = useState(10); // Limit for displaying text
+  const [{ showSidebar }] = useDataLayerValue(); // Accessing state from a custom DataLayer
+  const [likedTracks, setLikedTracks] = useState([]); // Array of liked track IDs
+  const [searchQuery, setSearchQuery] = useState(""); // User's search query
 
+  // Filter the items based on the search query
   const filteredItems = items.filter((item) =>
     isArtist
       ? item.name.toLowerCase().includes(searchQuery.toLowerCase())
       : item.track.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Handle changes in the search input
   const searchHandler = (event) => {
     setSearchQuery(event.target.value);
   };
 
+  // useEffect for handling initial setup and cleanup
   useEffect(() => {
+    // Function to update the text limit based on screen size
     const updateTextLimit = () => {
       if (window.innerWidth < 600) {
         setTextLimit(15); // Small screen
@@ -35,6 +43,7 @@ const SongList = ({ heading, items, isArtist }) => {
       }
     };
 
+    // Function to fetch liked tracks from Spotify
     const fetchLikedTracks = async () => {
       try {
         const savedTracksResponse = await spotify.getMySavedTracks({
@@ -50,16 +59,20 @@ const SongList = ({ heading, items, isArtist }) => {
       }
     };
 
-    updateTextLimit(); // Call on initial render
+    // Call the functions on initial render
+    updateTextLimit();
     fetchLikedTracks();
 
-    // Update on window resize
+    // Add an event listener to update text limit on window resize
     window.addEventListener("resize", updateTextLimit);
+
+    // Clean up the event listener on component unmount
     return () => {
       window.removeEventListener("resize", updateTextLimit);
     };
   }, []);
 
+  // Function to convert milliseconds to mm:ss format
   const convertMsToMmSs = (durationMs) => {
     const totalSeconds = Math.floor(durationMs / 1000);
     const minutes = Math.floor(totalSeconds / 60);
@@ -68,8 +81,10 @@ const SongList = ({ heading, items, isArtist }) => {
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
+  // Render the component's UI
   return (
     <div className="max-h-[80%] w-[98%] overflow-y-auto scrollbar-thin scrollbar-thumb-[rgba(217,217,217,0.6)] scrollbar-track-transparent transition-all duration-300">
+      {/* Render the header section */}
       <div
         className="h-[20rem] w-full rounded-t-lg relative"
         style={{
@@ -77,19 +92,22 @@ const SongList = ({ heading, items, isArtist }) => {
             "linear-gradient(135deg, rgba(245,247,250,0.83) 10%, rgba(195,207,226,0.64) 100%)",
         }}
       >
+        {/* Render artist/track details */}
         <div className="absolute w-full bottom-0 flex flex-row p-4 space-x-6 text-white items-center lg:p-8">
+          {/* Render artist/track image */}
           {isArtist ? (
+            // Render artist image with verified badge
             <img
               src={heading.imgURL}
               alt="play_song"
-              className={`h-[10rem] w-[10rem]
-              }  rounded-full shadow-2xl ${
+              className={`h-[10rem] w-[10rem] rounded-full shadow-2xl ${
                 showSidebar
                   ? "lg:h-[14rem] w-[14em]"
                   : "md:h-[12rem] md:[12rem] lg:h-[14rem] w-[14rem]"
               } `}
             />
           ) : (
+            // Render track image
             <img
               src={heading.imgURL}
               alt="play_song"
@@ -99,8 +117,10 @@ const SongList = ({ heading, items, isArtist }) => {
             />
           )}
 
+          {/* Render artist/track information */}
           <div className="flex flex-col space-y-4">
             {isArtist ? (
+              // Render verified artist badge
               <div className="text-base font-bold text-white flex flex-row space-x-1 items-center">
                 <img
                   src="https://cdn-icons-png.flaticon.com/128/7641/7641727.png"
@@ -110,9 +130,11 @@ const SongList = ({ heading, items, isArtist }) => {
                 <p>Verified Artist</p>
               </div>
             ) : (
+              // Render track type
               <p className="text-sm font-bold text-white">{heading.type}</p>
             )}
 
+            {/* Render artist/track title */}
             <h2
               className={`text-[2rem] font-extrabold tracking-wide ${
                 showSidebar
@@ -126,10 +148,12 @@ const SongList = ({ heading, items, isArtist }) => {
             </h2>
 
             {isArtist ? (
+              // Render monthly listeners for artist
               <p className="text-lg text-white font-bold">
                 <span className="mr-1">12,765,850</span> monthly listeners
               </p>
             ) : (
+              // Render owner and number of songs for track
               <div className="flex flex-row space-x-4 items-center">
                 <div className="flex flex-row items-center space-x-2">
                   <img
@@ -150,6 +174,7 @@ const SongList = ({ heading, items, isArtist }) => {
         </div>
       </div>
 
+      {/* Render search and song list */}
       <div
         className="h-[5rem] w-full opacity-80 flex flex-row items-center justify-between px-8"
         style={{
@@ -157,10 +182,12 @@ const SongList = ({ heading, items, isArtist }) => {
             "linear-gradient(135deg, rgba(245,247,250,0.4) 10%, rgba(195,207,226,0.2) 100%)",
         }}
       >
+        {/* Render play button */}
         <div className="h-12 w-12 rounded-full text-black bg-green-400 flex justify-center items-center cursor-pointer">
           <PlayArrowIcon fontSize="large" />
         </div>
 
+        {/* Render search input */}
         <div className="w-[10rem] bg-transparent rounded-md px-3 text-sm py-2 flex flex-row items-center space-x-1 cursor-pointer hover:border-[1px] border-[1px] border-[rgba(255,255,255,0.71)]  transition-all duration-300">
           <SearchIcon className="text-white" />
           <input
@@ -173,6 +200,7 @@ const SongList = ({ heading, items, isArtist }) => {
         </div>
       </div>
 
+      {/* Render the list of songs */}
       <div
         className="h-auto w-full py-8 px-2"
         style={{
@@ -180,6 +208,7 @@ const SongList = ({ heading, items, isArtist }) => {
             "linear-gradient(135deg, rgba(245,247,250,0.2) 10%, rgba(195,207,226,0.1) 100%)",
         }}
       >
+        {/* Map over and render the filtered items */}
         {filteredItems.map((item, index) => {
           // Mapping over each item
 
@@ -195,7 +224,7 @@ const SongList = ({ heading, items, isArtist }) => {
             isArtist ? item.id : item.track.id
           );
 
-          console.log(item)
+          console.log(item);
 
           return (
             <div
@@ -273,4 +302,5 @@ const SongList = ({ heading, items, isArtist }) => {
   );
 };
 
+// Export the SongList component
 export default SongList;

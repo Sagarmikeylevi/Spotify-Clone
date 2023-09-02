@@ -7,11 +7,15 @@ import SpotifyWebApi from "spotify-web-api-js";
 const spotify = new SpotifyWebApi();
 
 const Search = () => {
+  // Destructuring values from the DataLayer context
   const [{ showSidebar }] = useDataLayerValue();
+
+  // State variables to manage search results and visibility
   const [showResult, setShowResult] = useState(false);
   const [result, setResult] = useState(null);
   const [allResults, setAllResults] = useState(null);
 
+  // Function to search for tracks and update state
   const searchItems = async (name) => {
     // Use the .search() method to search for tracks
     const searchResults = await spotify.search(name, ["track"], {
@@ -21,18 +25,17 @@ const Search = () => {
     // Extract the list of track results
     const tracks = searchResults.tracks.items;
 
+    // Set all search results and extract details for the top result
     setAllResults(tracks);
-
     const trackItem = {
       title: tracks[0].name,
       imgURL: tracks[0].album.images[0].url,
       artist: tracks[0].artists[0].name,
     };
-
     setResult(trackItem);
-    console.log("TRACKS ---> ", tracks);
   };
 
+  // Function to handle input changes and initiate the search
   const searchHandler = (event) => {
     if (event.target.value.trim().length === 0) {
       setShowResult(false);
@@ -44,6 +47,7 @@ const Search = () => {
 
   return (
     <div className="mt-4 px-4 max-h-[80%] w-[98%] overflow-y-auto scrollbar-thin scrollbar-thumb-[rgba(217,217,217,0.6)] scrollbar-track-transparent transition-all duration-300">
+      {/* Search input field */}
       <div className="w-[20rem] bg-[rgba(86,86,86,0.36)] rounded-full px-3 text-sm py-3 flex flex-row items-center space-x-1 cursor-pointer hover:border-[1px] hover:border-[rgba(255,255,255,0.71)]  transition-all duration-300">
         <SearchIcon className="text-gray-400" />
         <input
@@ -54,15 +58,18 @@ const Search = () => {
         />
       </div>
 
+      {/* Display search results if available */}
       {showResult && (
         <div
           className={`mt-8 flex flex-row gap-10 mb-8 ${
             showSidebar ? "" : "lg:justify-center"
           }`}
         >
+          {/* Display top result */}
           <div className="flex flex-col">
             <h2 className="text-white text-xl font-bold mb-4">Top Result</h2>
             <div className="group h-[18rem] w-[23rem] flex flex-col justify-evenly bg-[rgba(77,77,77,0.3)] rounded-md cursor-pointer hover:bg-[rgba(77,77,77,0.5)] transition-all duration-200 px-8 py-6 relative">
+              {/* Play button for top result */}
               <div className="hidden absolute top-[70%] left-[80%] h-14 w-14 rounded-full text-black z-[999] bg-green-400 group-hover:flex justify-center items-center shadow-lg transition-all duration-200">
                 <PlayArrowIcon fontSize="large" />
               </div>
@@ -85,9 +92,11 @@ const Search = () => {
             </div>
           </div>
 
+          {/* Display list of songs */}
           <div className="flex flex-col">
             <h2 className="text-white text-xl font-bold mb-4">Songs</h2>
             <div className="h-[18rem] w-[25rem] flex flex-col justify-evenly ">
+              {/* Map and display search results */}
               {allResults &&
                 allResults.map((track) => (
                   <div
@@ -110,6 +119,7 @@ const Search = () => {
                       </p>
                     </div>
 
+                    {/* Play button for individual songs */}
                     <div className="hidden group-hover:inline-block absolute top-[50%] translate-y-[-50%] left-[8%]">
                       <PlayArrowIcon fontSize="large" className="text-white" />
                     </div>

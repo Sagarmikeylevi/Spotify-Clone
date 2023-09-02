@@ -1,11 +1,14 @@
+// Importing the useDataLayerValue hook from the DataLayer module
 import { useDataLayerValue } from "../DataLayer";
 
-// background-image: linear-gradient(135deg, #3B2667 10%, #BC78EC 100%);
-
+// Define the Sponsor component
 const Sponsor = () => {
+  // Destructure the state and dispatch function from the DataLayer context
   const [{ showSidebar, sponsoredPlaylist }, dispatch] = useDataLayerValue();
 
+  // Handler for the "Play" button click
   const playHandler = () => {
+    // Dispatch an action to open the showlist with playlist details
     dispatch({
       type: "OPEN_SHOWLIST",
       heading: {
@@ -20,12 +23,15 @@ const Sponsor = () => {
       isArtist: false,
     });
   };
+
+  // Render the Sponsor component
   return (
     <div
       className={`h-56 w-full rounded-md text-white relative shadow-lg  ${
         showSidebar ? "md:h-[17rem] lg:h-[15rem] xl:h-56" : "lg:h-60"
       }`}
       style={{
+        // Set the background image using linear gradient
         backgroundImage:
           "linear-gradient(135deg, rgba(24,18,39,0.7) 10%, rgba(51,30,64,0.6) 100%)",
       }}
@@ -108,4 +114,5 @@ const Sponsor = () => {
   );
 };
 
+// Export the Sponsor component
 export default Sponsor;

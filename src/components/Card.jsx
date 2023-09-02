@@ -1,19 +1,27 @@
+// Import necessary modules and components
 import SpotifyWebApi from "spotify-web-api-js";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { useDataLayerValue } from "../DataLayer";
 
+// Initialize the Spotify Web API instance
 const spotify = new SpotifyWebApi();
 
+// Define a functional component called "Card" that takes props
 const Card = ({ itemId, imgURL, title, description, isArtist }) => {
+  // Destructure the DataLayer value and dispatch function
   const [{}, dispatch] = useDataLayerValue();
 
+  // Function to fetch playlist details by playlist ID
   const getPlaylistById = async (itemId) => {
     try {
+      // Fetch playlist details
       const itemDetails = await spotify.getPlaylist(itemId);
       console.log("Item Details:", itemDetails);
 
+      // Fetch owner details
       const owner = await spotify.getUser(itemDetails.owner.id);
 
+      // Dispatch an action to update the DataLayer state
       dispatch({
         type: "OPEN_SHOWLIST",
         heading: {
@@ -32,15 +40,16 @@ const Card = ({ itemId, imgURL, title, description, isArtist }) => {
     }
   };
 
+  // Function to fetch artist details by artist ID
   const getArtistById = async (artistId) => {
     try {
+      // Fetch artist details
       const artistDetails = await spotify.getArtist(artistId);
 
-      // console.log("Artist Details:", artistDetails);
+      // Fetch artist's albums
       const artistAlbums = await spotify.getArtistAlbums(artistId);
 
-      // console.log(artistAlbums);
-
+      // Dispatch an action to update the DataLayer state for artist view
       dispatch({
         type: "OPEN_SHOWLIST",
         heading: {
@@ -54,14 +63,19 @@ const Card = ({ itemId, imgURL, title, description, isArtist }) => {
       console.error("Error:", error);
     }
   };
+
+  // Function to handle click event for showing playlist or artist details
   const showPlaylistHandler = () => {
     if (isArtist) {
+      // If it's an artist, fetch artist details
       getArtistById(itemId);
     } else {
+      // Otherwise, fetch playlist details
       getPlaylistById(itemId);
     }
   };
 
+  // Render the card component
   return (
     <div
       className={`group ${
@@ -84,15 +98,18 @@ const Card = ({ itemId, imgURL, title, description, isArtist }) => {
         className={`mt-2 px-2 flex flex-col ${isArtist ? "gap-1" : "gap-2"}`}
       >
         <h4 className="text-lg font-bold ">
+          {/* Truncate long titles */}
           {title.length > 15 ? title.slice(0, 15) + "..." : title}
         </h4>
         <p className="text-sm text-gray-400 font-thin tracking-wide">
+          {/* Truncate long descriptions */}
           {description.length > 30
             ? description.slice(0, 30) + "..."
             : description}
         </p>
       </div>
 
+      {/* Play button icon for showing playlist or artist details */}
       <div
         className="hidden absolute top-[45%] left-[65%] h-12 w-12 rounded-full text-black z-[999] bg-green-400 group-hover:flex justify-center items-center shadow-lg transition-all duration-200"
         onClick={showPlaylistHandler}
@@ -103,4 +120,5 @@ const Card = ({ itemId, imgURL, title, description, isArtist }) => {
   );
 };
 
+// Export the Card component as the default export
 export default Card;

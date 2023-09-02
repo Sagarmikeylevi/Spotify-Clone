@@ -1,8 +1,13 @@
 import { useDataLayerValue } from "../DataLayer";
 
+// Define the Playlist component which takes a playlist object as a prop
 const Playlist = ({ playlist }) => {
+  // Destructure the state and dispatch function from the DataLayer
   const [{}, dispatch] = useDataLayerValue();
+
+  // Define a click event handler for showing the playlist details
   const showPlaylistHandler = () => {
+    // Dispatch an action to open the playlist details with relevant data
     dispatch({
       type: "OPEN_SHOWLIST",
       heading: {
@@ -18,6 +23,7 @@ const Playlist = ({ playlist }) => {
     });
   };
 
+  // Render the Playlist component with its content
   return (
     <div
       className="flex flex-row p-2 rounded-md hover:bg-[rgba(217,217,217,0.1)] cursor-pointer transition-all duration-200"
@@ -44,4 +50,5 @@ const Playlist = ({ playlist }) => {
   );
 };
 
+// Export the Playlist component as the default export
 export default Playlist;

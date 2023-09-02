@@ -10,18 +10,12 @@ const spotify = new SpotifyWebApi();
 function App() {
   const [{ token }, dispatch] = useDataLayerValue();
 
+  // fetching current playing song
   const currentPlayingSongs = async () => {
     try {
       const currentTrack = await spotify.getMyCurrentPlayingTrack();
 
-      // console.log("CURRENT SONG ----->", currentTrack);
-
       const currentPlaybackState = await spotify.getMyCurrentPlaybackState();
-
-      // console.log(
-      //   "CURRENT SONG STATE ---->",
-      //   currentPlaybackState.device.volume_percent
-      // );
 
       dispatch({
         type: "ADD_CURRENTSONG",
@@ -41,6 +35,7 @@ function App() {
     }
   };
 
+  // fetching artist
   const fetchArtist = async (name) => {
     const artist = await spotify.search(name, ["artist"], {
       limit: 1,
@@ -56,6 +51,7 @@ function App() {
     });
   };
 
+  // fetching  playlist to it in home page
   const fetchPlaylistCards = async (title) => {
     try {
       const playlistCards = await spotify.search(title, ["playlist"], {
@@ -74,6 +70,7 @@ function App() {
     }
   };
 
+  // fetching sponsored playlist
   const fetchSponsoredPlaylist = async () => {
     try {
       const sponsoredPlaylist = await spotify.getPlaylist(
@@ -99,6 +96,7 @@ function App() {
     }
   };
 
+  // fetching liked songs of user 
   const fetchLikedSongs = async () => {
     try {
       const likedSongs = await spotify.getMySavedTracks();
@@ -123,6 +121,7 @@ function App() {
     }
   };
 
+  // fetching user liked playlist or create playlist
   const fetchPlaylists = async () => {
     try {
       const playlists = await spotify.getUserPlaylists();
@@ -161,6 +160,7 @@ function App() {
     }
   };
 
+  // setting access token and fetching user details 
   const setAccessTokenAndFetchUser = async (_token) => {
     dispatch({
       type: "SET_TOKEN",
@@ -180,6 +180,7 @@ function App() {
     }
   };
 
+  // handling all functions 
   const handleTokenAndUser = async () => {
     const hash = getTokenFromUrl();
     window.location.hash = "";
@@ -193,7 +194,7 @@ function App() {
       fetchPlaylists();
       fetchSponsoredPlaylist();
       fetchPlaylistCards("Punjabi Trending");
-      fetchPlaylistCards("Desi Hip-Hop");
+      fetchPlaylistCards("Bollywood Butter");
       fetchArtist("Shubh");
       fetchArtist("Talha Anjum");
       fetchArtist("Kaifi Khalil");
@@ -213,34 +214,3 @@ function App() {
 }
 
 export default App;
-
-/*
-
-// ... (Code for setting up Spotify API instance and access token)
-
-// Define a function to check if a specific track is liked by the user
-const isTrackLiked = async (trackId) => {
-  try {
-    // Use the .getMySavedTracks() method to retrieve the user's liked tracks
-    const savedTracksResponse = await spotifyApi.getMySavedTracks({ limit: 50 }); // Adjust the limit if needed
-
-    // Extract the list of saved tracks
-    const savedTracks = savedTracksResponse.items;
-
-    // Check if the desired track ID is in the list of saved tracks
-    const isLiked = savedTracks.some(savedTrack => savedTrack.track.id === trackId);
-
-    // Log the result
-    console.log(`Track ${isLiked ? 'is' : 'is not'} liked by the user.`);
-  } catch (error) {
-    console.error('Error:', error);
-  }
-};
-
-// Call the function to check if a specific track is liked by the user
-// Replace 'TRACK_ID' with the Spotify track ID you want to check
-isTrackLiked('TRACK_ID');
-
-
-
-*/
