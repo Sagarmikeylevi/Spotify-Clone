@@ -14,8 +14,6 @@ const SongList = ({ heading, items, isArtist }) => {
   const [likedTracks, setLikedTracks] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
-  console.log("ISARTIST =", isArtist);
-
   const filteredItems = items.filter((item) =>
     isArtist
       ? item.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -196,6 +194,8 @@ const SongList = ({ heading, items, isArtist }) => {
           const isLiked = likedTracks.includes(
             isArtist ? item.id : item.track.id
           );
+
+          console.log(item)
 
           return (
             <div
